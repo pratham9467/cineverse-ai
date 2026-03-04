@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text, View } from 'react-native'
 
-const watchlist = () => {
+const Watchlist = () => {
   return (
     <View>
       <Text>watchlist</Text>
@@ -9,4 +9,4 @@ const watchlist = () => {
   )
 }
 
-export default watchlist
+export default Watchlist
