@@ -2,19 +2,11 @@ import { useAuth } from '@/contexts/AuthContext'
 import { getImageUrl } from '@/lib/tmdb'
 import { getWatchlist, removeFromWatchlist, WatchlistItem } from '@/lib/watchlist'
 import { onWatchlistChanged } from '@/lib/watchlistEvents'
+import { searchIconBlue as searchIcon, bookmarkIconBlue as bookmarkIcon } from '@/lib/icons'
 import { useFocusEffect, useRouter } from 'expo-router'
 import React, { useCallback, useEffect, useState } from 'react'
-import { ActivityIndicator, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Image, ScrollView, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import { SvgXml } from 'react-native-svg'
-
-const searchIcon = `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-<circle cx="8" cy="8" r="5.5" stroke="#2F9BBC" stroke-width="1.5"/>
-<path d="M12 12L16 16" stroke="#2F9BBC" stroke-width="1.5" stroke-linecap="round"/>
-</svg>`
-
-const bookmarkIcon = `<svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M2 2.5H11V12.5L6.5 9.5L2 12.5V2.5Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
-</svg>`
 
 const placeholderImages = [
   require('@/assets/images/interstellar.png'),
@@ -186,42 +178,43 @@ const Watchlist = () => {
         >
           <View className="flex-row flex-wrap gap-3 justify-between">
             {filteredItems.map((item) => (
-              <View key={item.$id} className="w-[48%]">
-                <View className="aspect-[2/3] rounded-card overflow-hidden border border-purple-500/10 bg-surface-accent">
-                  <Image
-                    source={getMovieImage(item.moviePoster, item.movieId, item.type)}
-                    className="w-full h-full"
-                    resizeMode="cover"
-                  />
-                  <View className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80" />
-                  <TouchableOpacity
-                    className="absolute top-1 right-1 w-8 h-8 items-center justify-center border border-primary bg-primary rounded-full"
-                    onPress={() => handleRemove(item.$id)}
-                  >
-                    <SvgXml xml={bookmarkIcon} width={13} height={13} />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    className="absolute bottom-0 left-0 right-0 p-3"
-                    onPress={() => {
-                      if (item.type === 'anime') {
-                        router.push(`/anime/${item.movieId}` as any)
-                      } else {
-                        router.push(`/movies/${item.movieId}` as any)
-                      }
-                    }}
-                  >
-                    <Text className="text-white font-bold text-sm" numberOfLines={1}>
-                      {item.movieTitle}
-                    </Text>
-                    <Text className="text-white/60 text-xs mt-1">
-                      {item.movieRating != null ? item.movieRating.toFixed(1) : 'N/A'} • {item.movieReleaseDate?.split('-')[0] || 'N/A'}
-                    </Text>
-                    <Text className="text-white/40 text-xs mt-1" numberOfLines={1}>
-                      {item.moviePoster ? 'Poster available' : 'No poster'}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
+               <View key={item.$id} className="w-[48%]">
+                 <TouchableWithoutFeedback
+                   onPress={() => {
+                     if (item.type === 'anime') {
+                       router.push(`/anime/${item.movieId}` as any)
+                     } else {
+                       router.push(`/movies/${item.movieId}` as any)
+                     }
+                   }}
+                 >
+                   <View className="aspect-[2/3] rounded-card overflow-hidden border border-purple-500/10 bg-surface-accent">
+                     <Image
+                       source={getMovieImage(item.moviePoster, item.movieId, item.type)}
+                       className="w-full h-full"
+                       resizeMode="cover"
+                     />
+                     <View className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80" />
+                     <TouchableOpacity
+                       className="absolute top-1 right-1 w-8 h-8 items-center justify-center border border-primary bg-primary rounded-full"
+                       onPress={() => handleRemove(item.$id)}
+                     >
+                       <SvgXml xml={bookmarkIcon} width={13} height={13} />
+                     </TouchableOpacity>
+                     <View className="absolute bottom-0 left-0 right-0 p-3">
+                       <Text className="text-white font-bold text-sm" numberOfLines={1}>
+                         {item.movieTitle}
+                       </Text>
+                       <Text className="text-white/60 text-xs mt-1">
+                         {item.movieRating != null ? item.movieRating.toFixed(1) : 'N/A'} • {item.movieReleaseDate?.split('-')[0] || 'N/A'}
+                       </Text>
+                       <Text className="text-white/40 text-xs mt-1" numberOfLines={1}>
+                         {item.moviePoster ? 'Poster available' : 'No poster'}
+                       </Text>
+                     </View>
+                   </View>
+                 </TouchableWithoutFeedback>
+               </View>
             ))}
           </View>
         </ScrollView>

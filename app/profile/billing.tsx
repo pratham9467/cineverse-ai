@@ -1,24 +1,9 @@
 import { useAuth } from '@/contexts/AuthContext'
+import { chevronLeft, chevronRight, checkIcon, starIconBlue as starIcon } from '@/lib/icons'
 import { useRouter } from 'expo-router'
 import React from 'react'
 import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { SvgXml } from 'react-native-svg'
-
-const chevronLeft = `<svg width="10" height="18" viewBox="0 0 10 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M9 16L2 9L9 2" stroke="#2F9BBC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>`
-
-const chevronRight = `<svg width="8" height="14" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M1 1L6 6L1 11" stroke="#64748B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>`
-
-const checkIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M20 6L9 17L4 12" stroke="#2F9BBC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>`
-
-const starIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#2F9BBC"/>
-</svg>`
 
 const Billing = () => {
   const router = useRouter()

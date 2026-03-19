@@ -15,6 +15,7 @@ import {
   Movie,
   searchMovies
 } from "@/lib/tmdb";
+import { searchInputIcon as searchIcon, aistarsSvgWhite, notificationIcon, sortIcon } from "@/lib/icons";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -28,23 +29,6 @@ import {
   View,
 } from "react-native";
 import { SvgXml } from "react-native-svg";
-
-const searchIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<circle cx="11" cy="11" r="8" stroke="#475569" stroke-width="2"/>
-<path d="M16 16L21 21" stroke="#475569" stroke-width="2" stroke-linecap="round"/>
-</svg>`;
-const aistarsSvgWhite = `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M22.5 10L20.9375 6.5625L17.5 5L20.9375 3.4375L22.5 0L24.0625 3.4375L27.5 5L24.0625 6.5625L22.5 10ZM22.5 27.5L20.9375 24.0625L17.5 22.5L20.9375 20.9375L22.5 17.5L24.0625 20.9375L27.5 22.5L24.0625 24.0625L22.5 27.5ZM10 23.75L6.875 16.875L0 13.75L6.875 10.625L10 3.75L13.125 10.625L20 13.75L13.125 16.875L10 23.75ZM10 17.6875L11.25 15L13.9375 13.75L11.25 12.5L10 9.8125L8.75 12.5L6.0625 13.75L8.75 15L10 17.6875Z" fill="white"/>
-</svg>
-`;
-
-const notificationIcon = `<svg width="15" height="19" viewBox="0 0 15 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M7.5 1C4 1 1 4 1 7.5V12C1 13 0 14 0 15V17C0 17.5 0.5 18 1 18H14C14.5 18 15 17.5 15 17V15C15 14 14 13 14 12V7.5C14 4 11 1 7.5 1Z" stroke="#64748B" stroke-width="1.5" fill="none"/>
-</svg>`;
-
-const sortIcon = `<svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M1 1H11M1 4H11M1 7H11" stroke="#64748B" stroke-width="1.5" stroke-linecap="round"/>
-</svg>`;
 
 const placeholderImages = [
   require("@/assets/images/interstellar.png"),

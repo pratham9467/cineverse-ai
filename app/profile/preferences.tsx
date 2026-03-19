@@ -1,16 +1,9 @@
 import { useAuth } from '@/contexts/AuthContext'
+import { chevronLeft, chevronRight } from '@/lib/icons'
 import { useRouter } from 'expo-router'
 import React, { useState } from 'react'
 import { ScrollView, Switch, Text, TouchableOpacity, View } from 'react-native'
 import { SvgXml } from 'react-native-svg'
-
-const chevronLeft = `<svg width="10" height="18" viewBox="0 0 10 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M9 16L2 9L9 2" stroke="#2F9BBC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>`
-
-const chevronRight = `<svg width="8" height="14" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M1 1L6 6L1 11" stroke="#64748B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>`
 
 const Preferences = () => {
   const router = useRouter()

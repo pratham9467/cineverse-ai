@@ -1,3 +1,4 @@
+import { playIconSplash as playIcon } from '@/lib/icons'
 import React, { useEffect, useRef } from 'react'
 import { Animated, Image, Text, View } from 'react-native'
 import { SvgXml } from 'react-native-svg'
@@ -6,27 +7,6 @@ import { LinearGradient } from 'expo-linear-gradient'
 
 // Keep the splash screen visible
 SplashScreen.preventAutoHideAsync()
-
-const playIcon = `<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-<defs>
-  <linearGradient id="playGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-    <stop offset="0%" stop-color="#2F9BBC"/>
-    <stop offset="100%" stop-color="#00f2ff"/>
-  </linearGradient>
-  <filter id="glow">
-    <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#00f2ff" flood-opacity="0.5"/>
-  </filter>
-</defs>
-<circle cx="60" cy="60" r="55" stroke="url(#playGradient)" stroke-width="2" opacity="0.3"/>
-<circle cx="60" cy="60" r="45" stroke="url(#playGradient)" stroke-width="1.5" opacity="0.2"/>
-<path d="M45 30L45 90L95 60Z" fill="url(#playGradient)" filter="url(#glow)"/>
-<circle cx="30" cy="30" r="2" fill="#2F9BBC" opacity="0.6"/>
-<circle cx="85" cy="40" r="1.5" fill="#00f2ff" opacity="0.4"/>
-<circle cx="20" cy="85" r="2.5" fill="#2F9BBC" opacity="0.5"/>
-<circle cx="95" cy="75" r="1" fill="#00f2ff" opacity="0.7"/>
-<circle cx="75" cy="100" r="2" fill="#2F9BBC" opacity="0.3"/>
-<circle cx="10" cy="55" r="1.5" fill="#00f2ff" opacity="0.6"/>
-</svg>`
 
 const Splash = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current
