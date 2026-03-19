@@ -65,6 +65,9 @@ function AppContent() {
       <Stack.Screen name="movies/[id]" />
       <Stack.Screen name="anime/[id]" />
       <Stack.Screen name="aiscreen/aiscreen" />
+      <Stack.Screen name="profile/preferences" />
+      <Stack.Screen name="profile/account" />
+      <Stack.Screen name="profile/billing" />
       <Stack.Screen name="authscreen/login" options={{ gestureEnabled: false }} />
       <Stack.Screen name="authscreen/signup" />
       <Stack.Screen name="auth/google/callback" options={{ gestureEnabled: false }} />
