@@ -1,4 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
+import { aistarsblu, bookmarked, bookmarkOutline, playIcon, starIconLarge as starIcon } from "@/lib/icons";
 import {
   CastMember,
   Credits,
@@ -29,19 +30,6 @@ import {
   View,
 } from "react-native";
 import { SvgXml } from "react-native-svg";
-
-const aistarsblu = `<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M18 8L16.75 5.25L14 4L16.75 2.75L18 0L19.25 2.75L22 4L19.25 5.25L18 8ZM18 22L16.75 19.25L14 18L16.75 16.75L18 14L19.25 16.75L22 18L19.25 19.25L18 22ZM8 19L5.5 13.5L0 11L5.5 8.5L8 3L10.5 8.5L16 11L10.5 13.5L8 19ZM8 14.15L9 12L11.15 11L9 10L8 7.85L7 10L4.85 11L7 12L8 14.15Z" fill="#2F9BBC"/>
-</svg>`;
-
-const playIcon = `<svg width="11" height="14" viewBox="0 0 11 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M0 14V0L11 7L0 14ZM2 10.35L7.25 7L2 3.65V10.35Z" fill="white"/>
-</svg>`;
-
-const starIcon = `<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M8.5 0L10.5 6L16.5 6L11.5 10L13.5 16L8.5 12L3.5 16L5.5 10L0.5 6L6.5 6L8.5 0Z" fill="#FACC15"/>
-</svg>`;
-const bookmark = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-120v-640q0-33 23.5-56.5T280-840h240v80H280v518l200-86 200 86v-278h80v400L480-240 200-120Zm80-640h240-240Zm400 160v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z"/></svg>`;
 
 const placeholderProfile = require("@/assets/images/denis.png");
 const placeholderBackdrop = require("@/assets/images/backdrop.png");
@@ -229,7 +217,7 @@ const Details = () => {
                 className={`w-14 items-center justify-center rounded-xl py-4 ${inWatchlist ? "bg-primary border border-primary" : "bg-black/60 backdrop-blur-md border border-white/10"}`}
                 onPress={handleWatchlistToggle}
               >
-                <SvgXml xml={bookmark} width={18} height={18} />
+                <SvgXml xml={inWatchlist ? bookmarked : bookmarkOutline} width={18} height={18} />
               </TouchableOpacity>
             </View>
           </View>

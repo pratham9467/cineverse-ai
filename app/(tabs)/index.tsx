@@ -1,22 +1,9 @@
 import { formatRating, formatReleaseYear, Genre, getGenres, getImageUrl, getNowPlayingMovies, getPopularMovies, getTrendingMovies, Movie } from '@/lib/tmdb'
+import { playIcon, starIcon, aistarsSvgWhite } from '@/lib/icons'
 import { router } from 'expo-router'
 import React, { useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, Animated, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { SvgXml } from 'react-native-svg'
-
-const playIcon = `<svg width="11" height="14" viewBox="0 0 11 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M0 14V0L11 7L0 14ZM2 10.35L7.25 7L2 3.65V10.35Z" fill="white"/>
-</svg>`
-
-const starIcon = `<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M4 0L5 3L8 3L5.5 5L6.5 8L4 6L1.5 8L2.5 5L0 3L3 3L4 0Z" fill="#FACC15"/>
-</svg>`
-
-
-const aistarsSvgWhite = `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M22.5 10L20.9375 6.5625L17.5 5L20.9375 3.4375L22.5 0L24.0625 3.4375L27.5 5L24.0625 6.5625L22.5 10ZM22.5 27.5L20.9375 24.0625L17.5 22.5L20.9375 20.9375L22.5 17.5L24.0625 20.9375L27.5 22.5L24.0625 24.0625L22.5 27.5ZM10 23.75L6.875 16.875L0 13.75L6.875 10.625L10 3.75L13.125 10.625L20 13.75L13.125 16.875L10 23.75ZM10 17.6875L11.25 15L13.9375 13.75L11.25 12.5L10 9.8125L8.75 12.5L6.0625 13.75L8.75 15L10 17.6875Z" fill="white"/>
-</svg>
-`
 
 const categories = ['All', 'Action', 'Sci-Fi', 'Drama', 'Thriller', 'Comedy']
 
