@@ -2,6 +2,8 @@
  * CineVerse AI Service
  * 
  * Production-grade AI service with:
+ * - Multi-provider support (Ollama Cloud + Hugging Face)
+ * - Automatic fallback between providers
  * - Request deduplication (prevents duplicate simultaneous requests)
  * - Response caching with TTL
  * - Fallback to rule-based system
@@ -23,16 +25,25 @@ import {
 import {
   MoodType,
   AIResponse,
-  UIRecommendation,
+  AIRecommendation,
   ParsedAIResponse,
+  RawAIRecommendation,
   MOOD_TO_KEYWORDS,
   MOOD_INFO,
   MovieData,
 } from './types';
 import { searchMovies, Movie } from '@/lib/tmdb';
+import { getOllamaClient } from './ollama-client';
+import { getHuggingFaceClient, HF_MODELS } from './huggingface';
 
-const OLLAMA_API_KEY = process.env.EXPO_PUBLIC_OLLAMA_API_KEY || '';
-const OLLAMA_API_URL = 'https://ollama.com/api';
+/** AI Provider types */
+export type AIProvider = 'ollama' | 'huggingface';
+
+/** Provider configuration */
+const PROVIDER_CONFIG: Record<AIProvider, { name: string; priority: number }> = {
+  ollama: { name: 'Ollama Cloud', priority: 1 },
+  huggingface: { name: 'Hugging Face', priority: 2 },
+};
 
 // ============================================================================
 // REQUEST DEDUPLICATION
@@ -83,7 +94,8 @@ class RequestDeduplicator {
 /**
  * Main AI service for CineVerse
  * 
- * This is the primary interface for AI operations using Gemini API.
+ * This is the primary interface for AI operations.
+ * Supports multiple providers: Ollama Cloud and Hugging Face.
  */
 export class AIService {
   private readonly deduplicator: RequestDeduplicator;
@@ -134,69 +146,90 @@ export class AIService {
   }
 
   /**
-   * Execute AI request with proper error handling
+   * Execute AI request with multiple providers (Ollama → Hugging Face → Fallback)
    */
   private async executeAIRequest(
     query: string,
     mood: MoodType,
     movieContext?: MovieData[]
   ): Promise<Result<ParsedAIResponse>> {
-    // Check if Ollama API is configured
-    if (!OLLAMA_API_KEY || OLLAMA_API_KEY === 'your_api_key_here') {
-      return failure(new AIError(
-        'Ollama API key not configured',
-        AIErrorCodes.CONFIGURATION_ERROR,
-        { isRetryable: false }
-      ));
+    // Build prompt
+    const systemPrompt = this.getSystemPrompt(mood);
+    const userPrompt = this.buildUserPrompt(query, mood, movieContext);
+    
+    const messages: ChatMessage[] = [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userPrompt },
+    ];
+
+    // Try Ollama Cloud first
+    console.log('[AI] Trying Ollama Cloud...');
+    const ollamaResult = await this.tryOllama(messages);
+    if (isSuccess(ollamaResult)) {
+      console.log('[AI] Ollama succeeded');
+      return ollamaResult;
+    }
+    console.log('[AI] Ollama failed:', ollamaResult.error.message);
+
+    // Try Hugging Face as fallback
+    console.log('[AI] Trying Hugging Face...');
+    const hfResult = await this.tryHuggingFace(messages);
+    if (isSuccess(hfResult)) {
+      console.log('[AI] Hugging Face succeeded');
+      return hfResult;
+    }
+    console.log('[AI] Hugging Face failed:', hfResult.error.message);
+
+    // Return error - both providers failed
+    return failure(new AIError(
+      'All AI providers failed. Please check your API keys.',
+      AIErrorCodes.FALLBACK_EXHAUSTED,
+      { isRetryable: false }
+    ));
+  }
+
+  /**
+   * Try Ollama Cloud API
+   */
+  private async tryOllama(messages: ChatMessage[]): Promise<Result<ParsedAIResponse>> {
+    const client = getOllamaClient();
+    const result = await client.chat(messages, {
+      model: AI_CONFIG.DEFAULT_MODEL,
+      temperature: AI_CONFIG.TEMPERATURE,
+      maxTokens: AI_CONFIG.MAX_TOKENS,
+    });
+
+    if (isFailure(result)) {
+      return result;
     }
 
-    try {
-      // Build prompt
-      const systemPrompt = this.getSystemPrompt(mood);
-      const userPrompt = this.buildUserPrompt(query, mood, movieContext);
+    return this.parseAIResponse(
+      result.data.content,
+      result.data.model,
+      result.data.usage.totalTokens,
+      result.data.latencyMs,
+      result.data.cached
+    );
+  }
 
-      const response = await fetch(`${OLLAMA_API_URL}/chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${OLLAMA_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: AI_CONFIG.DEFAULT_MODEL,
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userPrompt }
-          ],
-          stream: false,
-          options: {
-            temperature: AI_CONFIG.TEMPERATURE,
-            num_predict: AI_CONFIG.MAX_TOKENS,
-          },
-        }),
-      });
+  /**
+   * Try Hugging Face Inference API
+   */
+  private async tryHuggingFace(messages: ChatMessage[]): Promise<Result<ParsedAIResponse>> {
+    const client = getHuggingFaceClient();
+    const result = await client.generate(messages);
 
-      if (!response.ok) {
-        const errorText = await response.text().catch(() => 'Unknown error');
-        return failure(new AIError(
-          `Ollama API error: ${response.status} - ${errorText}`,
-          AIErrorCodes.API_ERROR,
-          { statusCode: response.status, isRetryable: response.status >= 500 }
-        ));
-      }
-
-      const data = await response.json();
-      const text = data.message?.content || '';
-
-      // Parse response
-      return this.parseAIResponse(text, data.model || AI_CONFIG.DEFAULT_MODEL, 0, 0, false);
-
-    } catch (error) {
-      return failure(new AIError(
-        'Failed to communicate with AI service',
-        AIErrorCodes.NETWORK_ERROR,
-        { isRetryable: true, cause: error as Error }
-      ));
+    if (isFailure(result)) {
+      return result;
     }
+
+    return this.parseAIResponse(
+      result.data,
+      HF_MODELS.MISTRAL_7B,
+      0, // HF doesn't return token count
+      0,
+      false
+    );
   }
 
   /**
@@ -431,7 +464,7 @@ Recommend 6 movies. Return ONLY valid JSON.`;
    */
   private async getRuleBasedRecommendations(
     mood: MoodType
-  ): Promise<UIRecommendation[]> {
+  ): Promise<AIRecommendation[]> {
     const keywords = MOOD_TO_KEYWORDS[mood];
     const moodName = MOOD_INFO[mood].name.toLowerCase();
     
@@ -516,42 +549,33 @@ Recommend 6 movies. Return ONLY valid JSON.`;
     }
 
     try {
-      const response = await fetch(`${OLLAMA_API_URL}/chat`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${OLLAMA_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: AI_CONFIG.DEFAULT_MODEL,
-          messages: [{
-            role: 'user',
-            content: `Analyze this movie request and return JSON with detectedMood (one of: melancholic, adrenaline, mind-bending, romantic, comedic, thriller) and confidence (0-1): "${query.trim()}"`
-          }],
-          stream: false,
-          options: { temperature: 0.3, num_predict: 200 },
-        }),
-      });
-
-      if (!response.ok) {
-        return failure(new AIError('Analysis API failed', AIErrorCodes.API_ERROR, { isRetryable: true }));
-      }
-
-      const data = await response.json();
-      const text = data.message?.content || '';
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      // Use simple keyword-based detection for now
+      // This is more reliable and doesn't require additional API calls
+      const lowerQuery = query.toLowerCase();
       
-      if (!jsonMatch) {
-        return success({ detectedMood: 'adrenaline', confidence: 0.5 });
+      if (lowerQuery.includes('sad') || lowerQuery.includes('cry') || lowerQuery.includes('emotional')) {
+        return success({ detectedMood: 'melancholic' as MoodType, confidence: 0.8 });
       }
-
-      const parsed = JSON.parse(jsonMatch[0]);
-      return success({
-        detectedMood: parsed.detectedMood || 'adrenaline',
-        confidence: parsed.confidence || 0.5,
-      });
+      if (lowerQuery.includes('action') || lowerQuery.includes('exciting') || lowerQuery.includes('intense')) {
+        return success({ detectedMood: 'adrenaline' as MoodType, confidence: 0.8 });
+      }
+      if (lowerQuery.includes('scary') || lowerQuery.includes('horror') || lowerQuery.includes('suspense')) {
+        return success({ detectedMood: 'thriller' as MoodType, confidence: 0.8 });
+      }
+      if (lowerQuery.includes('love') || lowerQuery.includes('romance') || lowerQuery.includes('date')) {
+        return success({ detectedMood: 'romantic' as MoodType, confidence: 0.8 });
+      }
+      if (lowerQuery.includes('funny') || lowerQuery.includes('comedy') || lowerQuery.includes('laugh')) {
+        return success({ detectedMood: 'comedic' as MoodType, confidence: 0.8 });
+      }
+      if (lowerQuery.includes('think') || lowerQuery.includes('complex') || lowerQuery.includes('twist') || lowerQuery.includes('mind')) {
+        return success({ detectedMood: 'mind-bending' as MoodType, confidence: 0.8 });
+      }
+      
+      // Default
+      return success({ detectedMood: 'adrenaline' as MoodType, confidence: 0.5 });
     } catch (error) {
-      return success({ detectedMood: 'adrenaline', confidence: 0.5 });
+      return success({ detectedMood: 'adrenaline' as MoodType, confidence: 0.5 });
     }
   }
 
@@ -561,9 +585,13 @@ Recommend 6 movies. Return ONLY valid JSON.`;
   async healthCheck(): Promise<Result<{ latencyMs: number; cacheStats: unknown; circuitStatus: unknown }>> {
     const startTime = Date.now();
     
-    if (!OLLAMA_API_KEY || OLLAMA_API_KEY === 'your_api_key_here') {
+    // Check if any AI provider is configured
+    const ollamaClient = getOllamaClient();
+    const hfClient = getHuggingFaceClient();
+    
+    if (!hfClient.isConfigured()) {
       return failure(new AIError(
-        'Ollama API key not configured',
+        'No AI provider configured. Add EXPO_PUBLIC_OLLAMA_API_KEY or EXPO_PUBLIC_HF_API_KEY to .env',
         AIErrorCodes.CONFIGURATION_ERROR,
         { isRetryable: false }
       ));
@@ -591,7 +619,8 @@ Recommend 6 movies. Return ONLY valid JSON.`;
    * Reset service state
    */
   reset(): void {
-    // No-op for Gemini-based service
+    // Clear pending requests
+    this.deduplicator['pendingRequests'].clear();
   }
 }
 

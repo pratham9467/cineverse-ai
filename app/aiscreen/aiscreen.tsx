@@ -86,11 +86,13 @@ const AIScreen = () => {
   const loadInitialRecommendations = async () => {
     setLoading(true)
     try {
+      console.log('[AI Screen] Loading initial recommendations')
       const response = await getAIEnhancedRecommendations('Show me popular and highly-rated movies right now', 'adrenaline')
+      console.log('[AI Screen] Initial recommendations loaded:', response.recommendations.length, 'movies')
       setRecommendations(response.recommendations)
       setAiReasoning(sanitizeAIResponse(response.reasoning.join('\n\n')))
     } catch (error) {
-      console.error('Error loading initial recommendations:', error)
+      console.error('[AI Screen] Error loading initial recommendations:', error)
     } finally {
       setLoading(false)
     }
@@ -106,15 +108,21 @@ const AIScreen = () => {
     setIsAiTyping(true)
 
     try {
+      console.log('[AI Screen] Sending query:', userQuery)
       await new Promise(resolve => setTimeout(resolve, 1000))
       const response = await getAIEnhancedRecommendations(userQuery, 'adrenaline')
+      console.log('[AI Screen] Received response:', {
+        recommendationsCount: response.recommendations.length,
+        isAIEnhanced: response.isAIEnhanced,
+        latencyMs: response.latencyMs,
+      })
       setIsAiTyping(false)
       setRecommendations(response.recommendations)
       setAiReasoning(sanitizeAIResponse(response.reasoning.join('\n\n')))
     } catch (error) {
-      console.error('Error getting AI response:', error)
+      console.error('[AI Screen] Error getting AI response:', error)
       setIsAiTyping(false)
-      Alert.alert('Error', 'Failed to get recommendations. Please try again.')
+      Alert.alert('Error', `Failed to get recommendations: ${error instanceof Error ? error.message : 'Unknown error'}. Please check your API key configuration.`)
     } finally {
       setLoading(false)
     }

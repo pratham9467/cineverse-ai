@@ -24,21 +24,35 @@ export {
   AIService,
   getAIService,
   resetAIService,
+  type AIProvider,
 } from './ai-service';
+
+// Ollama client
+export { 
+  getOllamaClient, 
+  resetOllamaClient,
+  OllamaClient,
+} from './ollama-client';
+
+// Hugging Face client
+export { 
+  getHuggingFaceClient, 
+  resetHuggingFaceClient,
+  HuggingFaceClient,
+  HF_MODELS,
+  type HFModel,
+} from './huggingface';
 
 // Types
 export type {
   MoodType,
   AIResponse,
-  UIRecommendation,
+  AIRecommendation,
   MoodInfo,
   MovieData,
   QueryAnalysis,
   ParsedAIResponse,
 } from './types';
-
-// Re-export AIRecommendation as alias for UIRecommendation
-export type { UIRecommendation as AIRecommendation } from './types';
 
 // Configuration
 export { AI_CONFIG, AI_MODELS } from './config';

@@ -1,5 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { aistarsblu, playIcon, starIconLarge as starIcon, linkIcon, bookmarkOutline, bookmarkFilled } from "@/lib/icons";
+import { aistarsblu, playIcon, starIconLarge as starIcon, linkIcon, bookmarkOutline, bookmarked } from "@/lib/icons";
 import { Anime, getAnimeById } from "@/lib/jikan";
 import {
   addToWatchlist,
@@ -204,7 +204,7 @@ const AnimeDetails = () => {
                 className={`w-14 items-center justify-center rounded-xl py-4 ${inWatchlist ? "bg-primary border border-primary" : "bg-black/60 backdrop-blur-md border border-white/10"}`}
                 onPress={handleWatchlistToggle}
               >
-                <SvgXml xml={inWatchlist ? bookmarkFilled : bookmarkOutline} width={18} height={18} />
+                <SvgXml xml={inWatchlist ? bookmarked : bookmarkOutline} width={18} height={18} />
               </TouchableOpacity>
             </View>
           </View>

@@ -420,17 +420,16 @@ export class OllamaClient {
       : abortController.signal;
 
     try {
+      // OpenAI-compatible format for Ollama Cloud
       const requestBody = {
         model,
         messages: messages.map(m => ({ role: m.role, content: m.content })),
         stream: false,
-        options: {
-          temperature: options.temperature ?? AI_CONFIG.TEMPERATURE,
-          num_predict: options.maxTokens ?? AI_CONFIG.MAX_TOKENS,
-        },
+        temperature: options.temperature ?? AI_CONFIG.TEMPERATURE,
+        max_tokens: options.maxTokens ?? AI_CONFIG.MAX_TOKENS,
       };
 
-      const response = await fetch(`${AI_CONFIG.API_BASE_URL}/api/chat`, {
+      const response = await fetch(`${AI_CONFIG.API_BASE_URL}/chat/completions`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${this.apiKey}`,
@@ -471,8 +470,8 @@ export class OllamaClient {
 
       const data = await response.json();
 
-      // Validate response structure - Ollama format
-      if (!data.message || !data.message.content) {
+      // Validate response structure - OpenAI format
+      if (!data.choices || !data.choices[0]?.message?.content) {
         return failure(new AIError(
           'Invalid API response: missing message content',
           AIErrorCodes.PARSING_ERROR,
@@ -481,13 +480,13 @@ export class OllamaClient {
       }
 
       const completion: AICompletionResponse = {
-        id: this.generateRequestId(),
+        id: data.id || this.generateRequestId(),
         model: data.model || model,
-        content: data.message.content,
+        content: data.choices[0].message.content,
         usage: {
-          promptTokens: data.prompt_eval_count || 0,
-          completionTokens: data.eval_count || 0,
-          totalTokens: (data.prompt_eval_count || 0) + (data.eval_count || 0),
+          promptTokens: data.usage?.prompt_tokens || 0,
+          completionTokens: data.usage?.completion_tokens || 0,
+          totalTokens: data.usage?.total_tokens || 0,
         },
         latencyMs: 0, // Will be set by caller
         cached: false,

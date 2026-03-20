@@ -65,45 +65,7 @@ export const MOOD_INFO: Record<MoodType, MoodInfo> = {
   },
 };
 
-/** Movie recommendation from AI */
-export interface AIRecommendation {
-  title: string;
-  matchPercentage: number;
-  reason: string;
-  moodTags: string[];
-  year?: number;
-  posterPath?: string;
-  tmdbId?: number;
-}
-
-/** Parsed AI response */
-export interface ParsedAIResponse {
-  recommendations: AIRecommendation[];
-  analysis: string;
-  modelUsed: string;
-  tokensUsed: number;
-  latencyMs: number;
-  cached: boolean;
-}
-
-/** AI service response for UI */
-export interface AIResponse {
-  recommendations: UIRecommendation[];
-  reasoning: string[];
-  query: string;
-  isAIEnhanced: boolean;
-  latencyMs: number;
-}
-
-/** UI-ready recommendation with full movie data */
-export interface UIRecommendation {
-  movie: MovieData;
-  matchPercentage: number;
-  reason: string;
-  moodTags: string[];
-}
-
-/** Movie data structure */
+/** Movie data structure (compatible with TMDB Movie type) */
 export interface MovieData {
   id: number;
   title: string;
@@ -116,6 +78,41 @@ export interface MovieData {
   genre_ids: number[];
   popularity: number;
   original_language: string;
+}
+
+/** Movie recommendation from AI (for UI consumption) */
+export interface AIRecommendation {
+  movie: MovieData;
+  matchPercentage: number;
+  reason: string;
+  moodTags: string[];
+}
+
+/** Raw AI recommendation from parsed JSON (before TMDB lookup) */
+export interface RawAIRecommendation {
+  title: string;
+  matchPercentage: number;
+  reason: string;
+  moodTags: string[];
+}
+
+/** Parsed AI response */
+export interface ParsedAIResponse {
+  recommendations: RawAIRecommendation[];
+  analysis: string;
+  modelUsed: string;
+  tokensUsed: number;
+  latencyMs: number;
+  cached: boolean;
+}
+
+/** AI service response for UI */
+export interface AIResponse {
+  recommendations: AIRecommendation[];
+  reasoning: string[];
+  query: string;
+  isAIEnhanced: boolean;
+  latencyMs: number;
 }
 
 /** Query analysis result */

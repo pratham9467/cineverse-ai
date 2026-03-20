@@ -14,8 +14,8 @@
  * All timeouts in milliseconds
  */
 export const AI_CONFIG = {
-  /** Ollama API endpoint */
-  API_BASE_URL: 'https://ollama.com',
+  /** Ollama Cloud API endpoint */
+  API_BASE_URL: 'https://ollama.com/v1',
   
   /** Request timeout (30 seconds) */
   REQUEST_TIMEOUT: 30_000,
@@ -41,11 +41,11 @@ export const AI_CONFIG = {
   /** Maximum cache size */
   CACHE_MAX_SIZE: 100,
   
-  /** Default AI model */
-  DEFAULT_MODEL: 'llama3.1',
+  /** Default Ollama model */
+  DEFAULT_MODEL: 'gpt-oss:20b',
   
-  /** Fallback model if primary fails */
-  FALLBACK_MODEL: 'mistral',
+  /** Fallback Ollama model */
+  FALLBACK_MODEL: 'glm-4.7',
   
   /** Maximum tokens in response */
   MAX_TOKENS: 1500,
@@ -60,35 +60,35 @@ export const AI_CONFIG = {
   MAX_CONTEXT_MOVIES: 15,
 } as const;
 
-/** Available AI models with metadata */
+/** Available Ollama Cloud models */
 export const AI_MODELS = {
-  'llama3.1': {
-    id: 'llama3.1',
-    name: 'Llama 3.1',
+  'gpt-oss:20b': {
+    id: 'gpt-oss:20b',
+    name: 'GPT-OSS 20B',
     description: 'Fast and efficient. Best for movie recommendations.',
     recommended: true,
     maxTokens: 2000,
   },
-  'llama3': {
-    id: 'llama3',
-    name: 'Llama 3',
-    description: 'Stable and reliable.',
+  'gpt-oss:120b': {
+    id: 'gpt-oss:120b',
+    name: 'GPT-OSS 120B',
+    description: 'Higher quality responses.',
+    recommended: false,
+    maxTokens: 4000,
+  },
+  'glm-4.7': {
+    id: 'glm-4.7',
+    name: 'GLM 4.7',
+    description: 'General purpose, balanced.',
     recommended: false,
     maxTokens: 2000,
   },
-  'mistral': {
-    id: 'mistral',
-    name: 'Mistral',
-    description: 'General purpose, balanced performance.',
+  'deepseek-v3.1:671b': {
+    id: 'deepseek-v3.1:671b',
+    name: 'DeepSeek V3.1',
+    description: 'Complex reasoning.',
     recommended: false,
-    maxTokens: 2000,
-  },
-  'gemma2': {
-    id: 'gemma2',
-    name: 'Gemma 2',
-    description: 'Lightweight and fast.',
-    recommended: false,
-    maxTokens: 2000,
+    maxTokens: 4000,
   },
 } as const;
 
@@ -278,20 +278,16 @@ export function isFailure<T>(result: Result<T>): result is { success: false; err
 
 /** Validate environment configuration */
 export function validateConfig(): Result<void, AIError> {
-  const apiKey = process.env.EXPO_PUBLIC_OLLAMA_API_KEY;
+  const ollamaKey = process.env.EXPO_PUBLIC_OLLAMA_API_KEY;
+  const hfKey = process.env.EXPO_PUBLIC_HF_API_KEY;
   
-  if (!apiKey) {
+  const hasOllama = ollamaKey && ollamaKey !== 'your_api_key_here' && ollamaKey.length > 10;
+  const hasHF = hfKey && hfKey !== '' && hfKey.startsWith('hf_');
+  
+  if (!hasOllama && !hasHF) {
     return failure(new AIError(
-      'Ollama API key not configured. Add EXPO_PUBLIC_OLLAMA_API_KEY to your .env file.',
+      'No AI provider configured. Add EXPO_PUBLIC_OLLAMA_API_KEY or EXPO_PUBLIC_HF_API_KEY to .env',
       AIErrorCodes.CONFIGURATION_ERROR,
-      { isRetryable: false }
-    ));
-  }
-  
-  if (apiKey === 'your_api_key_here' || apiKey.length < 10) {
-    return failure(new AIError(
-      'Invalid API key. Please set a valid EXPO_PUBLIC_OLLAMA_API_KEY in your .env file.',
-      AIErrorCodes.VALIDATION_ERROR,
       { isRetryable: false }
     ));
   }
