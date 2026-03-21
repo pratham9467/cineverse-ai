@@ -16,6 +16,18 @@ export interface Movie {
   vote_count?: number;
 }
 
+export interface Series {
+  id: number;
+  name: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  vote_average: number;
+  genre_ids: number[];
+  first_air_date: string;
+  overview?: string;
+  popularity?: number;
+}
+
 export interface CastMember {
   id: number;
   name: string;
@@ -186,6 +198,18 @@ export const getSimilarMovies = async (movieId: number, page: number = 1): Promi
 
 export const getMovieVideos = async (movieId: number): Promise<{ results: Video[] }> => {
   return fetchFromTMDB(`/movie/${movieId}/videos`, { language: 'en-US' })
+}
+
+export const getSeriesVideos = async (seriesId: number): Promise<{ results: Video[] }> => {
+  return fetchFromTMDB(`/tv/${seriesId}/videos`, { language: 'en-US' })
+}
+
+export const getSeasonVideos = async (seriesId: number, seasonNumber: number): Promise<{ results: Video[] }> => {
+  return fetchFromTMDB(`/tv/${seriesId}/season/${seasonNumber}/videos`, { language: 'en-US' })
+}
+
+export const getEpisodeVideos = async (seriesId: number, seasonNumber: number, episodeNumber: number): Promise<{ results: Video[] }> => {
+  return fetchFromTMDB(`/tv/${seriesId}/season/${seasonNumber}/episode/${episodeNumber}/videos`, { language: 'en-US' })
 }
 
 export interface Video {

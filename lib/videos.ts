@@ -1,44 +1,62 @@
-import { getMovieVideos, Video } from './tmdb';
+import { getMovieVideos, getEpisodeVideos, Video } from './tmdb';
 
 // YouTube base URLs
 const YOUTUBE_BASE_URL = 'https://www.youtube.com/watch?v=';
 const YOUTUBE_THUMBNAIL_BASE_URL = 'https://img.youtube.com/vi/';
 
 /**
+ * Find the best video from a list of TMDB videos
+ */
+const findBestVideo = (videos: Video[]): Video | null => {
+  // Filter for YouTube videos only
+  const youtubeVideos = videos.filter(video => video.site === 'YouTube');
+  
+  if (youtubeVideos.length === 0) return null;
+  
+  // Prefer official trailers
+  const officialTrailer = youtubeVideos.find(
+    video => video.official && video.type === 'Trailer'
+  );
+  if (officialTrailer) return officialTrailer;
+  
+  // Then any official video
+  const officialVideo = youtubeVideos.find(video => video.official);
+  if (officialVideo) return officialVideo;
+  
+  // Then any trailer
+  const trailer = youtubeVideos.find(video => video.type === 'Trailer');
+  if (trailer) return trailer;
+  
+  // Then any teaser
+  const teaser = youtubeVideos.find(video => video.type === 'Teaser');
+  if (teaser) return teaser;
+  
+  // Return first available YouTube video
+  return youtubeVideos[0];
+};
+
+/**
  * Get the best trailer for a movie
- * Prefers official trailers, then teasers, then any video
  */
 export const getBestTrailer = async (movieId: number): Promise<Video | null> => {
   try {
     const { results } = await getMovieVideos(movieId);
-    
-    // Filter for YouTube videos only
-    const youtubeVideos = results.filter(video => video.site === 'YouTube');
-    
-    if (youtubeVideos.length === 0) return null;
-    
-    // Prefer official trailers
-    const officialTrailer = youtubeVideos.find(
-      video => video.official && video.type === 'Trailer'
-    );
-    if (officialTrailer) return officialTrailer;
-    
-    // Then any official video
-    const officialVideo = youtubeVideos.find(video => video.official);
-    if (officialVideo) return officialVideo;
-    
-    // Then any trailer
-    const trailer = youtubeVideos.find(video => video.type === 'Trailer');
-    if (trailer) return trailer;
-    
-    // Then any teaser
-    const teaser = youtubeVideos.find(video => video.type === 'Teaser');
-    if (teaser) return teaser;
-    
-    // Return first available YouTube video
-    return youtubeVideos[0];
+    return findBestVideo(results);
   } catch (error) {
     console.error('Error fetching trailer:', error);
+    return null;
+  }
+};
+
+/**
+ * Get the best trailer for a TV episode
+ */
+export const getBestEpisodeTrailer = async (seriesId: number, seasonNumber: number, episodeNumber: number): Promise<Video | null> => {
+  try {
+    const { results } = await getEpisodeVideos(seriesId, seasonNumber, episodeNumber);
+    return findBestVideo(results);
+  } catch (error) {
+    console.error('Error fetching episode trailer:', error);
     return null;
   }
 };
