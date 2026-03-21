@@ -120,6 +120,7 @@ export const getYouTubeEmbedUrl = (videoKey: string, origin?: string): string =>
     'modestbranding=1',
     'rel=0',
     'showinfo=0',
+    'strict-origin-when-cross-origin',
     'iv_load_policy=3',
     'fs=1',
     'enablejsapi=1',

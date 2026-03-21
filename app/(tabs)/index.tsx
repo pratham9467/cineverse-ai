@@ -1,6 +1,6 @@
 import { formatRating, formatReleaseYear, Genre, getGenres, getImageUrl, getNowPlayingMovies, getPopularMovies, getTrendingMovies, Movie } from '@/lib/tmdb'
 import { Anime, formatAnimeRating, formatAnimeYear, getTopAnime, getSeasonalAnime } from '@/lib/jikan'
-import { getBestTrailer, getYouTubeEmbedUrl } from '@/lib/videos'
+import { getBestTrailer } from '@/lib/videos'
 import { playIcon, starIcon, aistarsSvgWhite } from '@/lib/icons'
 import BottomSheet from '@/lib/BottomSheet'
 import { useThemeMode } from '@/contexts/ThemeModeContext'
@@ -8,7 +8,7 @@ import { router } from 'expo-router'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, Animated, FlatList, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { SvgXml } from 'react-native-svg'
-import { WebView } from 'react-native-webview'
+import YoutubePlayer from "react-native-youtube-iframe"
 
 const movieCategories = ['All', 'Action', 'Sci-Fi', 'Drama', 'Thriller', 'Comedy']
 const animeCategories = ['All', 'Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Sci-Fi']
@@ -470,47 +470,25 @@ const Index = () => {
   const renderMovieHero = () => (
     <View className="h-[380px] mx-4 rounded-[28px] overflow-hidden shadow-2xl shadow-black/50">
       {showTrailer && heroTrailerKey ? (
-        <WebView
-          source={{ 
-            html: `
-              <html>
-                <head>
-                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                  <style>
-                    body { margin: 0; padding: 0; background: #000; }
-                    iframe { width: 100%; height: 100%; border: none; }
-                  </style>
-                </head>
-                <body>
-                  <iframe 
-                    src="https://www.youtube.com/embed/${heroTrailerKey}?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&rel=0&modestbranding=1" 
-                    allow="autoplay; encrypted-media" 
-                    allowfullscreen>
-                  </iframe>
-                </body>
-              </html>
-            `
-          }}
-          style={{ flex: 1 }}
-          javaScriptEnabled={true}
-          domStorageEnabled={true}
-          allowsFullscreenVideo={true}
-          mediaPlaybackRequiresUserAction={false}
-          startInLoadingState={true}
-          scalesPageToFit={true}
-          onError={(syntheticEvent) => {
-            const { nativeEvent } = syntheticEvent
-            console.warn('WebView error:', nativeEvent)
-            
-            // If embedding fails, hide trailer and show static image
-            if (nativeEvent.description?.includes('153') || 
-                nativeEvent.title?.includes('153') ||
-                nativeEvent.url?.includes('error=153')) {
-              console.log('YouTube embedding restriction detected, falling back to static image')
+        <View style={{ width: '100%', height: '100%', backgroundColor: '#000', justifyContent: 'center' }}>
+          <YoutubePlayer
+            height={380}
+            play={true}
+            mute={true}
+            videoId={heroTrailerKey}
+            initialPlayerParams={{
+              loop: true,
+              controls: false,
+              modestbranding: true,
+              rel: false,
+              playlist: heroTrailerKey,
+            }}
+            onError={(error: any) => {
+              console.warn('YoutubePlayer error:', error)
               setShowTrailer(false)
-            }
-          }}
-        />
+            }}
+          />
+        </View>
       ) : (
         <Image
           source={heroMovie ? { uri: getImageUrl(heroMovie.backdrop_path, 'w1280') ?? undefined } : require('@/assets/images/interstellar2.png')}
@@ -518,8 +496,8 @@ const Index = () => {
           resizeMode="cover"
         />
       )}
-      <View className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30" />
-      <View className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
+      <View className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-background/90" />
+      <View className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background via-background/60 to-transparent" />
       <View className="absolute bottom-0 left-0 right-0 p-6">
         <View className="flex-row gap-2 mb-3">
           {heroMovie && heroMovie.genre_ids.slice(0, 2).map((genreId, idx) => (
