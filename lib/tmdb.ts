@@ -94,8 +94,8 @@ export const formatReleaseYear = (dateString: string): string => {
   return dateString.split('-')[0];
 };
 
-export const getTrendingMovies = async (): Promise<{ results: Movie[] }> => {
-  return fetchFromTMDB('/trending/movie/day', { language: 'en-US' });
+export const getTrendingMovies = async (page: number = 1): Promise<{ results: Movie[]; total_pages: number }> => {
+  return fetchFromTMDB('/trending/movie/day', { page, language: 'en-US' });
 };
 
 export const getNowPlayingMovies = async (page: number = 1): Promise<{ results: Movie[] }> => {

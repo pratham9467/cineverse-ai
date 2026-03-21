@@ -1,6 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { aistarsblu, bookmarked, bookmarkOutline, playIcon, starIconLarge as starIcon, aiIcon } from "@/lib/icons";
-import { router } from "expo-router";
 import {
   CastMember,
   Credits,
@@ -13,13 +12,15 @@ import {
   getMovieDetails,
   MovieDetails,
 } from "@/lib/tmdb";
+import { getBestTrailer } from "@/lib/videos";
 import {
   addToWatchlist,
   isInWatchlist,
   removeFromWatchlist,
 } from "@/lib/watchlist";
 import { emitWatchlistChanged } from "@/lib/watchlistEvents";
-import { Stack, useLocalSearchParams } from "expo-router";
+import BottomSheet from "@/lib/BottomSheet";
+import { Stack, useLocalSearchParams, router } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -42,6 +43,8 @@ const Details = () => {
   const [loading, setLoading] = useState(true);
   const [inWatchlist, setInWatchlist] = useState(false);
   const [watchlistItemId, setWatchlistItemId] = useState<string | null>(null);
+  const [showCastSheet, setShowCastSheet] = useState(false);
+  const [trailerKey, setTrailerKey] = useState<string | null>(null);
   const { user, isLoggedIn } = useAuth();
 
   const checkWatchlist = useCallback(async () => {
@@ -100,12 +103,16 @@ const Details = () => {
 
   const loadMovieData = async (movieId: string) => {
     try {
-      const [movieData, creditsData] = await Promise.all([
+      const [movieData, creditsData, trailer] = await Promise.all([
         getMovieDetails(movieId),
         getMovieCredits(movieId),
+        getBestTrailer(parseInt(movieId)),
       ]);
       setMovie(movieData);
       setCredits(creditsData);
+      if (trailer) {
+        setTrailerKey(trailer.key);
+      }
     } catch (error) {
       console.error("Error loading movie data:", error);
     } finally {
@@ -149,6 +156,7 @@ const Details = () => {
 
   const director = getDirector(credits?.crew || []);
   const topCast = getTopCast(credits?.cast || []);
+  const allCast = credits?.cast || [];
   const ratingPercent = Math.round(movie.vote_average * 10);
 
   return (
@@ -208,7 +216,22 @@ const Details = () => {
             </View>
 
             <View className="flex-row gap-3 mt-5">
-              <TouchableOpacity className="flex-1 flex-row items-center justify-center gap-2 bg-primary rounded-xl py-4 shadow-lg shadow-primary/30">
+              <TouchableOpacity 
+                className="flex-1 flex-row items-center justify-center gap-2 bg-primary rounded-xl py-4 shadow-lg shadow-primary/30"
+                onPress={() => {
+                  if (movie) {
+                    router.push({
+                      pathname: '/player/[id]' as any,
+                      params: {
+                        id: movie.id.toString(),
+                        title: movie.title,
+                        poster: movie.poster_path || '',
+                        backdrop: movie.backdrop_path || ''
+                      }
+                    });
+                  }
+                }}
+              >
                 <SvgXml xml={playIcon} width={14} height={14} />
                 <Text className="text-secondary font-bold text-base">
                   Watch Now
@@ -237,7 +260,9 @@ const Details = () => {
           <View className="mt-6">
             <View className="flex-row justify-between items-center mb-4">
               <Text className="text-secondary font-bold text-lg">Top Cast</Text>
-              <Text className="text-primary text-sm font-medium">See all</Text>
+              <TouchableOpacity onPress={() => setShowCastSheet(true)}>
+                <Text className="text-primary text-sm font-medium">See all</Text>
+              </TouchableOpacity>
             </View>
 
             <ScrollView
@@ -364,8 +389,51 @@ const Details = () => {
           <View className="h-40" />
         </View>
       </ScrollView>
+
+      {/* Cast Bottom Sheet */}
+      <BottomSheet
+        visible={showCastSheet}
+        onClose={() => setShowCastSheet(false)}
+        title={`Full Cast (${allCast.length})`}
+        heightPercent={0.75}
+      >
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
+        >
+          {allCast.map((actor) => (
+            <View
+              key={actor.id}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                paddingVertical: 10,
+                borderBottomWidth: 1,
+                borderBottomColor: 'rgba(255,255,255,0.05)',
+              }}
+            >
+              <View style={{ width: 48, height: 48, borderRadius: 24, overflow: 'hidden', backgroundColor: '#1a1a2e', marginRight: 14 }}>
+                <Image
+                  source={
+                    actor.profile_path
+                      ? { uri: getImageUrl(actor.profile_path, "w185") ?? undefined }
+                      : placeholderProfile
+                  }
+                  style={{ width: '100%', height: '100%' }}
+                  resizeMode="cover"
+                />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: '#f1f5f9', fontWeight: '600', fontSize: 14 }}>{actor.name}</Text>
+                <Text style={{ color: '#64748b', fontSize: 12, marginTop: 2 }}>{actor.character}</Text>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
+      </BottomSheet>
     </View>
   );
 };
 
 export default Details;
+

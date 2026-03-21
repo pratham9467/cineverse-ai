@@ -16,6 +16,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import { SvgXml } from 'react-native-svg'
 import { homeIcon, searchIcon, watchlistIcon, profileIcon, socialIcon } from '@/lib/icons'
+import { useThemeMode } from '@/contexts/ThemeModeContext'
 import "../global.css"
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -24,6 +25,7 @@ const TAB_BAR_WIDTH = SCREEN_WIDTH * 0.92;
 const CustomTabBar = ({ state, descriptors, navigation }: any) => {
   const [tabWidth, setTabWidth] = useState(0);
   const translateX = useSharedValue(0);
+  const { colors } = useThemeMode();
 
   useEffect(() => {
     if (tabWidth > 0) {
@@ -61,19 +63,19 @@ const CustomTabBar = ({ state, descriptors, navigation }: any) => {
         }}
       >
         <View className="flex-row flex-1 items-center px-0.5" onLayout={onLayout}>
-          {/* Animated indicator — must use style for animated transforms + shadow */}
+          {/* Animated indicator — colors sync with movie/anime mode */}
           <Animated.View
             style={[
               {
                 position: 'absolute',
                 height: 40,
-                backgroundColor: 'rgba(46, 153, 189, 0.8)',
+                backgroundColor: colors.primaryBg,
                 borderRadius: 25,
                 padding: 4,
                 left: 0,
                 borderWidth: 1,
                 borderColor: 'rgba(255, 255, 255, 0.2)',
-                shadowColor: '#2E99BD',
+                shadowColor: colors.primaryShadow,
                 shadowOffset: { width: 0, height: 2 },
                 shadowOpacity: 0.3,
                 shadowRadius: 10,

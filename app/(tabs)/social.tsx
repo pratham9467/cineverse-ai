@@ -24,6 +24,7 @@ import {
 } from 'react-native'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 import { SvgXml } from 'react-native-svg'
+import { useThemeMode } from '@/contexts/ThemeModeContext'
 
 // ============================================================================
 // TYPES
@@ -106,6 +107,8 @@ const userPlusIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24
 // ============================================================================
 
 const ActivityCard = ({ activity, onPress }: ActivityCardProps) => {
+  const { colors: themeColors } = useThemeMode()
+
   return (
     <Animated.View entering={FadeInDown.duration(400)}>
       <TouchableOpacity
@@ -114,11 +117,11 @@ const ActivityCard = ({ activity, onPress }: ActivityCardProps) => {
         activeOpacity={0.7}
       >
         {/* User Avatar */}
-        <View className="w-10 h-10 rounded-full bg-primary/20 items-center justify-center overflow-hidden mr-3">
+        <View style={{ backgroundColor: `${themeColors.primary}33` }} className="w-10 h-10 rounded-full items-center justify-center overflow-hidden mr-3">
           {activity.userAvatar ? (
             <Image source={{ uri: activity.userAvatar }} className="w-full h-full" />
           ) : (
-            <Text className="text-primary font-bold text-sm">
+            <Text style={{ color: themeColors.primary }} className="font-bold text-sm">
               {activity.userName.charAt(0).toUpperCase()}
             </Text>
           )}
@@ -164,13 +167,15 @@ const ActivityCard = ({ activity, onPress }: ActivityCardProps) => {
 }
 
 const UserSuggestionCard = ({ user, onFollow, isFollowing }: UserSuggestionCardProps) => {
+  const { colors: themeColors } = useThemeMode()
+
   return (
     <View className="flex-row items-center p-3 bg-surface/30 rounded-xl mb-2 border border-white/5">
-      <View className="w-12 h-12 rounded-full bg-primary/20 items-center justify-center overflow-hidden mr-3">
+      <View style={{ backgroundColor: `${themeColors.primary}33` }} className="w-12 h-12 rounded-full items-center justify-center overflow-hidden mr-3">
         {user.avatarUrl ? (
           <Image source={{ uri: user.avatarUrl }} className="w-full h-full" />
         ) : (
-          <Text className="text-primary font-bold">
+          <Text style={{ color: themeColors.primary }} className="font-bold">
             {user.name.charAt(0).toUpperCase()}
           </Text>
         )}
@@ -188,10 +193,11 @@ const UserSuggestionCard = ({ user, onFollow, isFollowing }: UserSuggestionCardP
       </View>
 
       <TouchableOpacity
-        className={`px-4 py-2 rounded-lg ${isFollowing ? 'bg-surface border border-primary' : 'bg-primary'}`}
+        style={isFollowing ? { backgroundColor: 'transparent', borderWidth: 1, borderColor: themeColors.primary, paddingHorizontal: 16, paddingVertical: 8, borderRadius: 8 } 
+                           : { backgroundColor: themeColors.primary, paddingHorizontal: 16, paddingVertical: 8, borderRadius: 8 }}
         onPress={onFollow}
       >
-        <Text className={`text-xs font-semibold ${isFollowing ? 'text-primary' : 'text-white'}`}>
+        <Text style={{ fontSize: 12, fontWeight: '600', color: isFollowing ? themeColors.primary : '#ffffff' }}>
           {isFollowing ? 'Following' : 'Follow'}
         </Text>
       </TouchableOpacity>
@@ -199,21 +205,25 @@ const UserSuggestionCard = ({ user, onFollow, isFollowing }: UserSuggestionCardP
   )
 }
 
-const EmptyState = ({ type }: { type: 'feed' | 'suggestions' }) => (
-  <View className="flex-1 items-center justify-center py-20 px-6">
-    <View className="w-20 h-20 rounded-full bg-primary/10 items-center justify-center mb-4">
-      <SvgXml xml={type === 'feed' ? homeIcon : userPlusIcon} width={32} height={32} color="#2F9BBC" />
+const EmptyState = ({ type }: { type: 'feed' | 'suggestions' }) => {
+  const { colors: themeColors } = useThemeMode()
+
+  return (
+    <View className="flex-1 items-center justify-center py-20 px-6">
+      <View style={{ backgroundColor: `${themeColors.primary}1A` }} className="w-20 h-20 rounded-full items-center justify-center mb-4">
+        <SvgXml xml={type === 'feed' ? homeIcon : userPlusIcon} width={32} height={32} color={themeColors.primary} />
+      </View>
+      <Text className="text-text-primary font-bold text-lg text-center mb-2">
+        {type === 'feed' ? 'No Activity Yet' : 'No Suggestions'}
+      </Text>
+      <Text className="text-text-muted text-sm text-center">
+        {type === 'feed'
+          ? 'Follow friends to see their movie activities here'
+          : 'Check back later for user suggestions'}
+      </Text>
     </View>
-    <Text className="text-text-primary font-bold text-lg text-center mb-2">
-      {type === 'feed' ? 'No Activity Yet' : 'No Suggestions'}
-    </Text>
-    <Text className="text-text-muted text-sm text-center">
-      {type === 'feed'
-        ? 'Follow friends to see their movie activities here'
-        : 'Check back later for user suggestions'}
-    </Text>
-  </View>
-)
+  )
+}
 
 // ============================================================================
 // MAIN SCREEN
@@ -231,6 +241,7 @@ const SocialScreen = () => {
     following,
     followers
   } = useSocial()
+  const { colors: themeColors } = useThemeMode()
 
   const [activeTab, setActiveTab] = useState<'feed' | 'discover'>('feed')
   const [suggestions, setSuggestions] = useState<User[]>([])
@@ -275,8 +286,8 @@ const SocialScreen = () => {
   if (!isLoggedIn) {
     return (
       <View className="flex-1 bg-background items-center justify-center px-6">
-        <View className="w-24 h-24 rounded-full bg-primary/10 items-center justify-center mb-6">
-          <SvgXml xml={homeIcon} width={40} height={40} color="#2F9BBC" />
+        <View style={{ backgroundColor: `${themeColors.primary}1A` }} className="w-24 h-24 rounded-full items-center justify-center mb-6">
+          <SvgXml xml={homeIcon} width={40} height={40} color={themeColors.primary} />
         </View>
         <Text className="text-text-primary font-bold text-2xl text-center mb-2">
           Connect with Friends
@@ -285,7 +296,7 @@ const SocialScreen = () => {
           Login to see what your friends are watching and share your own activity
         </Text>
         <TouchableOpacity
-          className="bg-primary px-8 py-3 rounded-xl"
+          style={{ backgroundColor: themeColors.primary, paddingHorizontal: 32, paddingVertical: 12, borderRadius: 12 }}
           onPress={() => router.push('/authscreen/login')}
         >
           <Text className="text-white font-semibold">Login to Continue</Text>
@@ -301,7 +312,7 @@ const SocialScreen = () => {
         <View className="flex-row items-center justify-between mb-4">
           <Text className="text-text-primary font-bold text-2xl">Social</Text>
           <TouchableOpacity className="p-2">
-            <SvgXml xml={notificationIcon} width={22} height={22} />
+            <SvgXml xml={notificationIcon} width={22} height={22} color={themeColors.primary} />
           </TouchableOpacity>
         </View>
 
@@ -326,7 +337,7 @@ const SocialScreen = () => {
         {/* Tabs */}
         <View className="flex-row bg-surface/30 rounded-lg p-1">
           <TouchableOpacity
-            className={`flex-1 py-2 rounded-md ${activeTab === 'feed' ? 'bg-primary' : ''}`}
+            style={{ flex: 1, paddingVertical: 8, borderRadius: 6, backgroundColor: activeTab === 'feed' ? themeColors.primary : 'transparent' }}
             onPress={() => setActiveTab('feed')}
           >
             <Text className={`text-center text-sm font-semibold ${activeTab === 'feed' ? 'text-white' : 'text-text-muted'}`}>
@@ -334,7 +345,7 @@ const SocialScreen = () => {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            className={`flex-1 py-2 rounded-md ${activeTab === 'discover' ? 'bg-primary' : ''}`}
+            style={{ flex: 1, paddingVertical: 8, borderRadius: 6, backgroundColor: activeTab === 'discover' ? themeColors.primary : 'transparent' }}
             onPress={() => setActiveTab('discover')}
           >
             <Text className={`text-center text-sm font-semibold ${activeTab === 'discover' ? 'text-white' : 'text-text-muted'}`}>
@@ -347,7 +358,7 @@ const SocialScreen = () => {
       {/* Content */}
       {isLoading && activityFeed.length === 0 ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#2F9BBC" />
+          <ActivityIndicator size="large" color={themeColors.primary} />
         </View>
       ) : activeTab === 'feed' ? (
         <FlatList
@@ -364,7 +375,7 @@ const SocialScreen = () => {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              tintColor="#2F9BBC"
+              tintColor={themeColors.primary}
             />
           }
           ListEmptyComponent={<EmptyState type="feed" />}

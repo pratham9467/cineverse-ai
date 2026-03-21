@@ -32,6 +32,7 @@ import {
   View,
 } from "react-native";
 import { SvgXml } from "react-native-svg";
+import { useThemeMode } from '@/contexts/ThemeModeContext';
 
 const placeholderImages = [
   require("@/assets/images/interstellar.png"),
@@ -46,13 +47,21 @@ const FilterButton = ({
   label,
   isActive,
   onPress,
+  activeColor,
+  activeBg,
 }: {
   label: string;
   isActive?: boolean;
   onPress?: () => void;
+  activeColor?: string;
+  activeBg?: string;
 }) => (
-  <TouchableOpacity onPress={onPress} className={`px-4 py-2 rounded-full border ${isActive ? "bg-[#0a2a33] border-cyan-500/40" : "bg-[#061218] border-[#0a1f2a]"}`}>
-    <Text className={`text-sm font-medium ${isActive ? "text-primary" : "text-text-secondary"}`}>
+  <TouchableOpacity
+    onPress={onPress}
+    style={isActive ? { backgroundColor: activeBg || '#0a2a33', borderWidth: 1, borderColor: activeColor ? `${activeColor}66` : 'rgba(6,181,204,0.4)', borderRadius: 999, paddingHorizontal: 16, paddingVertical: 8 }
+      : { backgroundColor: '#061218', borderWidth: 1, borderColor: '#0a1f2a', borderRadius: 999, paddingHorizontal: 16, paddingVertical: 8 }}
+  >
+    <Text style={{ fontSize: 14, fontWeight: '500', color: isActive ? (activeColor || '#2F9BBC') : '#94a3b8' }}>
       {label}
     </Text>
   </TouchableOpacity>
@@ -131,8 +140,21 @@ const AnimeCard = ({
   );
 };
 
+// Popular movie genres to show as chips
+const POPULAR_MOVIE_GENRES = ['Action', 'Adventure', 'Comedy', 'Drama', 'Sci-Fi', 'Thriller'];
+
+// Popular anime genres to show as chips (excluding Avant-Garde as requested)
+const POPULAR_ANIME_GENRES = ['Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Supernatural'];
+
 const Discover = () => {
-  const [activeTab, setActiveTab] = useState("movies");
+  const { mode } = useThemeMode();
+  const [activeTab, setActiveTab] = useState(mode === "anime" ? "anime" : "movies");
+
+  // Sync activeTab when global mode changes
+  useEffect(() => {
+    setActiveTab(mode === "anime" ? "anime" : "movies");
+  }, [mode]);
+
   const [movies, setMovies] = useState<Movie[]>([]);
   const [anime, setAnime] = useState<Anime[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
@@ -234,14 +256,45 @@ const Discover = () => {
     }, 500);
   };
 
-  const handleGenreSelect = (genreId: number | null) => {
+  const handleGenreSelect = async (genreId: number | null) => {
     setSelectedGenre(genreId);
-    if (genreId === null) {
+    setLoading(true);
+    
+    try {
       if (activeTab === "movies") {
-        loadMoviesData();
+        if (genreId === null) {
+          // Load popular movies when "All" is selected
+          const moviesData = await getPopularMovies(1);
+          setMovies(moviesData.results);
+        } else {
+          // Filter movies by selected genre
+          const params: AdvancedSearchParams = {
+            page: 1,
+            genreIds: [genreId],
+            sortBy: 'popularity.desc'
+          };
+          const data = await discoverMovies(params);
+          setMovies(data.results);
+        }
       } else if (activeTab === "anime") {
-        loadAnimeData();
+        if (genreId === null) {
+          // Load top anime when "All" is selected
+          const animeData = await getTopAnime(1);
+          setAnime(animeData.data);
+        } else {
+          // Filter anime by selected genre - we need to use search with genre filter
+          // For now, we'll filter the existing anime list by genre
+          // Note: Jikan API might need a different approach for genre filtering
+          const filteredAnime = anime.filter(animeItem => 
+            animeItem.genres?.some(genre => genre.mal_id === genreId)
+          );
+          setAnime(filteredAnime);
+        }
       }
+    } catch (error) {
+      console.error("Error filtering by genre:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -303,18 +356,20 @@ const Discover = () => {
     }
   };
 
+  const { colors: themeColors } = useThemeMode();
+
   return (
     <View className="flex-1 bg-background">
       <View className="bg-background px-4 pt-12 pb-4">
         <View className="flex-row items-center justify-between mb-4">
           <Text className="text-text-primary text-2xl font-bold">Discover</Text>
           <TouchableOpacity className="p-2">
-            <SvgXml xml={notificationIcon} width={15} height={19} />
+            <SvgXml xml={notificationIcon} width={15} height={19} color={themeColors.primary} />
           </TouchableOpacity>
         </View>
 
         <View className="h-12 bg-surface border border-white/10 rounded-card-lg px-4 flex-row items-center">
-          <SvgXml xml={searchIcon} width={15} height={15} />
+          <SvgXml xml={searchIcon} width={15} height={15} color={themeColors.primary} />
           <TextInput
             className="flex-1 text-text-muted text-sm ml-3"
             placeholder="Search by title, director or keyword"
@@ -330,20 +385,28 @@ const Discover = () => {
           <View className="bg-[#0a0f14] border border-white/10 rounded-lg p-0.5 flex-row gap-0">
             <TouchableOpacity
               onPress={() => setActiveTab("movies")}
-              className={`px-5 py-2 rounded-md ${activeTab === "movies" ? "bg-[#0a2a33]" : ""}`}
+              style={{
+                paddingHorizontal: 20, paddingVertical: 8, borderRadius: 6,
+                backgroundColor: activeTab === 'movies' ? (themeColors.primaryRgba || '#0a2a33') : 'transparent',
+              }}
             >
               <Text
-                className={`text-xs font-bold uppercase ${activeTab === "movies" ? "text-primary" : "text-text-muted"}`}
+                style={{ fontSize: 11, fontWeight: '700', textTransform: 'uppercase',
+                  color: activeTab === 'movies' ? themeColors.primary : '#64748b' }}
               >
                 Movies
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setActiveTab("anime")}
-              className={`px-5 py-2 rounded-md ${activeTab === "anime" ? "bg-[#0a2a33]" : ""}`}
+              style={{
+                paddingHorizontal: 20, paddingVertical: 8, borderRadius: 6,
+                backgroundColor: activeTab === 'anime' ? (themeColors.primaryRgba || '#0a2a33') : 'transparent',
+              }}
             >
               <Text
-                className={`text-xs font-bold uppercase ${activeTab === "anime" ? "text-primary" : "text-text-muted"}`}
+                style={{ fontSize: 11, fontWeight: '700', textTransform: 'uppercase',
+                  color: activeTab === 'anime' ? themeColors.primary : '#64748b' }}
               >
                 Anime
               </Text>
@@ -354,12 +417,12 @@ const Discover = () => {
             className="flex-row items-center gap-1.5"
             onPress={() => setFilterModalVisible(true)}
           >
-            <SvgXml xml={sortIcon} width={12} height={8} />
+            <SvgXml xml={sortIcon} width={12} height={8} color={themeColors.primary} />
             <Text className="text-text-muted text-xs font-medium">
               {activeFiltersCount > 0 ? `${activeFiltersCount} Filters` : 'Filters'}
             </Text>
             {activeFiltersCount > 0 && (
-              <View className="w-5 h-5 rounded-full bg-primary items-center justify-center">
+              <View style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: themeColors.primary, alignItems: 'center', justifyContent: 'center' }}>
                 <Text className="text-white text-xs font-bold">{activeFiltersCount}</Text>
               </View>
             )}
@@ -373,25 +436,33 @@ const Discover = () => {
                 label="All"
                 isActive={selectedGenre === null}
                 onPress={() => handleGenreSelect(null)}
+                activeColor={themeColors.primary}
+                activeBg={themeColors.primaryRgba}
               />
               {activeTab === "movies" ? (
-                genres.slice(0, 6).map((genre) => (
-                  <FilterButton
-                    key={genre.id}
-                    label={genre.name}
-                    isActive={selectedGenre === genre.id}
-                    onPress={() => handleGenreSelect(genre.id)}
-                  />
-                ))
+                genres
+                  .filter(genre => POPULAR_MOVIE_GENRES.includes(genre.name))
+                  .slice(0, 6)
+                  .map((genre) => (
+                    <FilterButton
+                      key={genre.id}
+                      label={genre.name}
+                      isActive={selectedGenre === genre.id}
+                      onPress={() => handleGenreSelect(genre.id)}
+                    />
+                  ))
               ) : (
-                animeGenres.slice(0, 6).map((genre) => (
-                  <FilterButton
-                    key={genre.mal_id}
-                    label={genre.name}
-                    isActive={selectedGenre === genre.mal_id}
-                    onPress={() => handleGenreSelect(genre.mal_id)}
-                  />
-                ))
+                animeGenres
+                  .filter(genre => POPULAR_ANIME_GENRES.includes(genre.name))
+                  .slice(0, 6)
+                  .map((genre) => (
+                    <FilterButton
+                      key={genre.mal_id}
+                      label={genre.name}
+                      isActive={selectedGenre === genre.mal_id}
+                      onPress={() => handleGenreSelect(genre.mal_id)}
+                    />
+                  ))
               )}
             </View>
           </ScrollView>
@@ -399,7 +470,7 @@ const Discover = () => {
 
         {loading ? (
           <View className="h-64 items-center justify-center">
-            <ActivityIndicator size="large" color="#2F9BBC" />
+            <ActivityIndicator size="large" color={themeColors.primary} />
           </View>
         ) : activeTab === "movies" ? (
           <View className="px-3 pt-2 pb-32">
@@ -423,7 +494,7 @@ const Discover = () => {
           </View>
         )}
       </ScrollView>
-      <AnimatedButton onPress={() => router.push("/aiscreen/aiscreen" as any)} />
+      <AnimatedButton color={themeColors.primary} onPress={() => router.push("/aiscreen/aiscreen" as any)} />
       
       {/* Filter Modal */}
       <FilterModal
@@ -439,21 +510,21 @@ const Discover = () => {
   );
 };
 
-const AnimatedButton = ({ onPress }: { onPress: () => void }) => {
+function AnimatedButton({ onPress, color }: { onPress: () => void; color: string }) {
   const scale = useRef(new Animated.Value(1)).current;
 
   const handlePressIn = () => {
-    Animated.spring(scale, {
-      toValue: 0.9,
+    Animated.timing(scale, {
+      toValue: 0.92,
+      duration: 120,
       useNativeDriver: true,
     }).start();
   };
 
   const handlePressOut = () => {
-    Animated.spring(scale, {
+    Animated.timing(scale, {
       toValue: 1,
-      friction: 3,
-      tension: 40,
+      duration: 200,
       useNativeDriver: true,
     }).start();
   };
@@ -474,7 +545,14 @@ const AnimatedButton = ({ onPress }: { onPress: () => void }) => {
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         activeOpacity={1}
-        className="w-16 h-16 rounded-full items-center justify-center bg-primary shadow-lg shadow-cyan-500/40"
+        style={{
+          width: 64, height: 64, borderRadius: 32,
+          alignItems: 'center', justifyContent: 'center',
+          backgroundColor: color,
+          shadowColor: color,
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.4, shadowRadius: 12, elevation: 6,
+        }}
       >
         <SvgXml xml={aistarsSvgWhite} width={28} height={28} />
       </TouchableOpacity>

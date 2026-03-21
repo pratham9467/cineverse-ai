@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from '../contexts/AuthContext';
 import { SocialProvider } from '../contexts/SocialContext';
 import { ReviewsProvider } from '../contexts/ReviewsContext';
 import { CollectionsProvider } from '../contexts/CollectionsContext';
+import { ThemeModeProvider } from '../contexts/ThemeModeContext';
 
 const CineverseTheme = {
   ...DarkTheme,
@@ -87,15 +88,17 @@ function AppContent() {
 export default function RootLayout() {
   return (
     <ThemeProvider value={CineverseTheme}>
-      <AuthProvider>
-        <SocialProvider>
-          <ReviewsProvider>
-            <CollectionsProvider>
-              <AppContent />
-            </CollectionsProvider>
-          </ReviewsProvider>
-        </SocialProvider>
-      </AuthProvider>
+      <ThemeModeProvider>
+        <AuthProvider>
+          <SocialProvider>
+            <ReviewsProvider>
+              <CollectionsProvider>
+                <AppContent />
+              </CollectionsProvider>
+            </ReviewsProvider>
+          </SocialProvider>
+        </AuthProvider>
+      </ThemeModeProvider>
     </ThemeProvider>
   );
 }
