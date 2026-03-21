@@ -15,7 +15,7 @@ import Animated, {
   withSpring
 } from 'react-native-reanimated'
 import { SvgXml } from 'react-native-svg'
-import { homeIcon, searchIcon, watchlistIcon, profileIcon } from '@/lib/icons'
+import { homeIcon, searchIcon, watchlistIcon, profileIcon, socialIcon } from '@/lib/icons'
 import "../global.css"
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -53,7 +53,7 @@ const CustomTabBar = ({ state, descriptors, navigation }: any) => {
       <BlurView
         intensity={90}
         tint="dark"
-        className="rounded-full overflow-hidden border border-white/20"
+        className="rounded-full overflow-hidden border border-white/20 px-1"
         style={{
           width: TAB_BAR_WIDTH,
           height: 52,
@@ -66,9 +66,10 @@ const CustomTabBar = ({ state, descriptors, navigation }: any) => {
             style={[
               {
                 position: 'absolute',
-                height: 50,
+                height: 40,
                 backgroundColor: 'rgba(46, 153, 189, 0.8)',
-                borderRadius: 50,
+                borderRadius: 25,
+                padding: 4,
                 left: 0,
                 borderWidth: 1,
                 borderColor: 'rgba(255, 255, 255, 0.2)',
@@ -102,6 +103,7 @@ const CustomTabBar = ({ state, descriptors, navigation }: any) => {
             switch (route.name) {
               case 'index': icon = homeIcon; label = 'Home'; break;
               case 'discover': icon = searchIcon; label = 'Search'; break;
+              case 'social': icon = socialIcon; label = 'Social'; break;
               case 'watchlist': icon = watchlistIcon; label = 'My List'; break;
               case 'profile': icon = profileIcon; label = 'Profile'; break;
               default: icon = homeIcon; label = '';
@@ -156,6 +158,7 @@ const _layout = () => {
     >
       <Tabs.Screen name="index" options={{ title: 'Home' }} />
       <Tabs.Screen name="discover" options={{ title: 'Search' }} />
+      <Tabs.Screen name="social" options={{ title: 'Social' }} />
       <Tabs.Screen name="watchlist" options={{ title: 'My List' }} />
       <Tabs.Screen name="profile" options={{ title: 'Profile' }} />
     </Tabs>

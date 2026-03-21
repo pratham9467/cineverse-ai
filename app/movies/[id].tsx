@@ -1,5 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { aistarsblu, bookmarked, bookmarkOutline, playIcon, starIconLarge as starIcon } from "@/lib/icons";
+import { aistarsblu, bookmarked, bookmarkOutline, playIcon, starIconLarge as starIcon, aiIcon } from "@/lib/icons";
+import { router } from "expo-router";
 import {
   CastMember,
   Credits,
@@ -272,6 +273,32 @@ const Details = () => {
                 ))}
               </View>
             </ScrollView>
+          </View>
+
+          {/* Reviews Section */}
+          <View className="mt-6">
+            <TouchableOpacity 
+              className="bg-surface/50 border border-white/10 rounded-xl p-4 flex-row items-center justify-between"
+              onPress={() => router.push({
+                pathname: '/reviews/[movieId]' as any,
+                params: { 
+                  movieId: id,
+                  movieTitle: movie?.title || 'Unknown Movie',
+                  moviePoster: movie?.poster_path || ''
+                }
+              })}
+            >
+              <View className="flex-row items-center gap-3">
+                <View className="w-10 h-10 rounded-full bg-primary/20 items-center justify-center">
+                  <SvgXml xml={aiIcon} width={20} height={20} />
+                </View>
+                <View>
+                  <Text className="text-secondary font-semibold">User Reviews</Text>
+                  <Text className="text-text-muted text-xs">See what others think</Text>
+                </View>
+              </View>
+              <Text className="text-primary font-semibold">View All →</Text>
+            </TouchableOpacity>
           </View>
 
           <View className="mt-6 flex-row gap-4">

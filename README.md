@@ -2,9 +2,9 @@
 
 # CineVerse AI
 
-### Your Personal AI-Powered Movie & Anime Companion
+### Your AI-Powered Entertainment Discovery Platform
 
-**Discover, Explore, and Get Personalized Recommendations — Powered by AI**
+**Discover, Connect, and Experience Entertainment Like Never Before**
 
 [![Expo][expo-badge]][expo-url]
 [![React Native][rn-badge]][rn-url]
@@ -12,193 +12,261 @@
 [![Appwrite][appwrite-badge]][appwrite-url]
 [![License][license-badge]](LICENSE)
 
-[Features](#features) • [Tech Stack](#tech-stack) • [Getting Started](#getting-started) • [Environment Variables](#environment-variables) • [Project Structure](#project-structure) • [Contributing](#contributing)
+[Features](#features) • [Architecture](#architecture) • [Tech Stack](#tech-stack) • [Getting Started](#getting-started) • [Screenshots](#screenshots) • [Contributing](#contributing)
 
 </div>
 
 ---
 
-## About
+## 🎯 About
 
-**CineVerse AI** is a cross-platform movie and anime discovery app built with React Native and Expo. It combines real-time data from **TMDB** and **Jikan** APIs with **Google Gemini AI** to deliver intelligent, mood-based movie recommendations. Browse trending titles, manage your personal watchlist, and let AI curate the perfect pick for any mood — all from a sleek, dark-themed interface.
+**CineVerse AI** is a full-featured, cross-platform entertainment discovery app that combines **AI-powered recommendations** with **social features** to create the ultimate movie and anime companion. Built with React Native and Expo, it demonstrates advanced patterns including state management, real-time data synchronization, and seamless user experiences.
+
+### Key Differentiators
+- 🤖 **AI Recommendations** - Natural language processing with Google Gemini/Ollama
+- 👥 **Social Features** - Activity feed, following, and user discovery
+- ⭐ **Reviews & Ratings** - Community-driven review system with engagement
+- 🔍 **Advanced Filtering** - Multi-criteria search with year, genre, rating filters
+- 📚 **Collections** - Personal playlists for organized movie tracking
+- 🎬 **Cross-Platform** - Single codebase for iOS, Android, and Web
 
 ---
 
-## Features
+## ✨ Features
 
+### Core Features
 | Feature | Description |
 |---------|-------------|
-| **AI Recommendations** | Describe your mood or preferences in natural language and receive 5-7 personalized movie picks powered by Google Gemini |
+| **AI Recommendations** | Natural language queries powered by Google Gemini with fallback mechanisms |
 | **Movie Discovery** | Browse trending, popular, top-rated, now playing, and upcoming movies via TMDB |
-| **Anime Discovery** | Explore top and seasonal anime with detailed info from the Jikan (MyAnimeList) API |
-| **Smart Watchlist** | Save movies and anime to your watchlist, organized by status (Watching, Completed) |
-| **User Authentication** | Secure email/password sign-up and Google OAuth login via Appwrite |
-| **Detailed Info Pages** | View cast, crew, ratings, runtime, genres, similar titles, and more |
-| **Quick Suggestions** | One-tap AI prompt suggestions like "Mind-bending like Inception" or "Dark thrillers" |
-| **Cross-Platform** | Runs on iOS, Android, and Web from a single codebase |
-| **Dark Theme UI** | Immersive cinematic dark mode with smooth animations |
+| **Anime Discovery** | Explore top and seasonal anime with detailed info from Jikan API |
+| **Smart Watchlist** | Save movies and anime with status tracking (Watching, Completed) |
+| **User Authentication** | Secure email/password and Google OAuth via Appwrite |
+| **Dark Theme UI** | Immersive cinematic dark mode with smooth Reanimated 4 animations |
+
+### Social Features (NEW)
+| Feature | Description |
+|---------|-------------|
+| **Activity Feed** | See what friends are watching, rating, and reviewing |
+| **Follow System** | Follow other users and build your community |
+| **User Profiles** | View user stats, reviews, and activity history |
+| **User Discovery** | Find and follow users with similar tastes |
+
+### Reviews & Ratings (NEW)
+| Feature | Description |
+|---------|-------------|
+| **Star Ratings** | Rate movies on a 5-star scale |
+| **Written Reviews** | Share detailed thoughts with the community |
+| **Like System** | Engage with reviews you find helpful |
+| **Review Sorting** | Sort by recent or most popular |
+| **Average Ratings** | See aggregated community scores |
+
+### Advanced Search (NEW)
+| Feature | Description |
+|---------|-------------|
+| **Year Filter** | Filter by release year (1975-2026) |
+| **Genre Filter** | Multi-select genre filtering |
+| **Rating Filter** | Minimum rating threshold |
+| **Sort Options** | 8 sorting options (popularity, rating, date, etc.) |
+| **Language Filter** | Filter by original language |
+| **Adult Content Toggle** | Control explicit content visibility |
+
+### Collections (NEW)
+| Feature | Description |
+|---------|-------------|
+| **Custom Playlists** | Create themed movie collections |
+| **Public/Private** | Share collections or keep them private |
+| **Collection Management** | Add, remove, and reorder items |
+| **Cover Images** | Visual collection covers |
 
 ---
 
-## Tech Stack
+## 🏗️ Architecture
 
-| Category | Technologies |
-|----------|-------------|
-| **Framework** | React Native, Expo SDK 54 |
-| **Language** | TypeScript |
-| **Routing** | Expo Router (file-based) |
-| **Styling** | NativeWind (Tailwind CSS), React Native Reanimated |
-| **Backend** | Appwrite (Auth, Database, Storage) |
-| **Movie API** | The Movie Database (TMDB) |
-| **Anime API** | Jikan v4 (MyAnimeList) |
-| **AI Engine** | Google Gemini 1.5 Flash |
-| **State** | React Context API |
-| **Navigation** | React Navigation Bottom Tabs |
+### Clean Architecture Pattern
+```
+├── app/                    # Expo Router pages (file-based routing)
+│   ├── (tabs)/            # Bottom tab navigation
+│   │   ├── index.tsx      # Home tab
+│   │   ├── discover.tsx   # Search & discovery
+│   │   ├── social.tsx     # Activity feed (NEW)
+│   │   ├── watchlist.tsx  # Personal watchlist
+│   │   └── profile.tsx    # User profile
+│   ├── aiscreen/          # AI recommendation chat
+│   ├── reviews/           # Review system (NEW)
+│   ├── collections/       # Collections management (NEW)
+│   ├── movies/            # Movie detail screens
+│   ├── anime/             # Anime detail screens
+│   ├── profile/           # Profile sub-screens
+│   └── auth/              # Authentication screens
+├── components/            # Reusable components
+│   └── FilterModal.tsx    # Advanced filter modal (NEW)
+├── contexts/              # React Context providers
+│   ├── AuthContext.tsx    # Authentication state
+│   ├── SocialContext.tsx  # Social features (NEW)
+│   ├── ReviewsContext.tsx # Reviews system (NEW)
+│   └── CollectionsContext.tsx # Collections (NEW)
+├── lib/                   # Utilities and API clients
+│   ├── ai/                # AI service integration
+│   ├── social.ts          # Social API functions (NEW)
+│   ├── appwrite.ts        # Appwrite client config
+│   ├── tmdb.ts            # TMDB API client
+│   ├── jikan.ts           # Jikan (anime) API client
+│   └── watchlist.ts       # Watchlist CRUD operations
+└── assets/                # Images, fonts, static assets
+```
+
+### State Management Strategy
+- **React Context** for global state (auth, social, reviews, collections)
+- **Custom Hooks** for reusable logic
+- **Optimistic Updates** for instant UI feedback
+- **Error Boundaries** for graceful degradation
+
+### Data Flow
+```
+User Action → Context Handler → API Call → Local State Update → UI Render
+                    ↓
+            Optimistic Update → Error Handling → Rollback if needed
+```
 
 ---
 
-## Screenshots
+## 🛠️ Tech Stack
 
-<div align="center">
-<img src="assets/images/logo.png" width="120" alt="CineVerse Logo" />
-</div>
+### Frontend
+| Technology | Purpose |
+|------------|---------|
+| **React Native 0.81** | Cross-platform mobile framework |
+| **Expo SDK 54** | Development platform & tools |
+| **TypeScript 5.9** | Type safety and developer experience |
+| **Expo Router 6** | File-based navigation |
+| **NativeWind 4** | Tailwind CSS for React Native |
+| **Reanimated 4** | Smooth animations |
+| **React Navigation 7** | Navigation primitives |
 
-> _Add your screenshots here_
+### Backend & Services
+| Technology | Purpose |
+|------------|---------|
+| **Appwrite** | Authentication, database, storage |
+| **TMDB API** | Movie data and images |
+| **Jikan API** | Anime data from MyAnimeList |
+| **Google Gemini** | AI-powered recommendations |
+| **Ollama Cloud** | Alternative AI provider |
 
-| Home | Discover | AI Chat | Watchlist |
-|:----:|:--------:|:-------:|:---------:|
-| Screenshot | Screenshot | Screenshot | Screenshot |
+### Development Tools
+| Tool | Purpose |
+|------|---------|
+| **ESLint** | Code linting |
+| **Prettier** | Code formatting |
+| **EAS Build** | App store builds |
+| **Sentry** | Error monitoring (recommended) |
 
 ---
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
-
 - **Node.js** >= 18
 - **npm** or **yarn**
 - **Expo CLI** (`npm install -g expo-cli`)
-- **Android Studio** (for Android emulator) or **Xcode** (for iOS simulator)
-- Appwrite project (self-hosted or [Appwrite Cloud](https://cloud.appwrite.io))
-- TMDB API key ([get one here](https://www.themoviedb.org/documentation/api))
-- Google Gemini API key ([get one here](https://makersuite.google.com/app/apikey))
+- **Appwrite project** (self-hosted or [Appwrite Cloud](https://cloud.appwrite.io))
+- **TMDB API key** ([get one here](https://www.themoviedb.org/documentation/api))
+- **Google Gemini API key** ([get one here](https://makersuite.google.com/app/apikey))
 
 ### Installation
 
 1. **Clone the repository**
-
    ```bash
    git clone https://github.com/your-username/cineverse-ai.git
    cd cineverse-ai
    ```
 
 2. **Install dependencies**
-
    ```bash
    npm install
    ```
 
 3. **Set up environment variables**
-
-   Create a `.env` file in the root directory (see [Environment Variables](#environment-variables))
+   ```env
+   # TMDB API
+   EXPO_PUBLIC_TMDB_API_KEY=your_tmdb_bearer_token
+   
+   # Google Gemini AI
+   EXPO_PUBLIC_GEMINI_API_KEY=your_gemini_api_key
+   
+   # Appwrite
+   EXPO_PUBLIC_APPWRITE_PROJECT_ID=your_project_id
+   EXPO_PUBLIC_APPWRITE_ENDPOINT=https://cloud.appwrite.io/v1
+   EXPO_PUBLIC_APPWRITE_DATABASE_ID=your_database_id
+   EXPO_PUBLIC_APPWRITE_USERS_COLLECTION_ID=your_users_collection_id
+   EXPO_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID=your_watchlist_collection_id
+   ```
 
 4. **Start the development server**
-
    ```bash
    npx expo start
    ```
 
-5. **Run on a device or emulator**
-
-   Press `a` for Android, `i` for iOS, or `w` for web. You can also scan the QR code with [Expo Go](https://expo.dev/go).
-
----
-
-## Environment Variables
-
-Create a `.env` file in the project root:
-
-```env
-# TMDB API
-EXPO_PUBLIC_TMDB_API_KEY=your_tmdb_bearer_token
-EXPO_PUBLIC_TMDB_IMAGE_BASE_URL=https://image.tmdb.org/t/p
-
-# Google Gemini AI
-EXPO_PUBLIC_GEMINI_API_KEY=your_gemini_api_key
-
-# Appwrite
-EXPO_PUBLIC_APPWRITE_PROJECT_ID=your_project_id
-EXPO_PUBLIC_APPWRITE_ENDPOINT=https://cloud.appwrite.io/v1
-EXPO_PUBLIC_APPWRITE_DATABASE_ID=your_database_id
-EXPO_PUBLIC_APPWRITE_USERS_COLLECTION_ID=your_users_collection_id
-EXPO_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID=your_watchlist_collection_id
-EXPO_PUBLIC_APPWRITE_GOOGLE_REDIRECT_URI=your_redirect_uri
-```
-
-> **Note:** `EXPO_PUBLIC_` prefix is required for Expo to expose variables to the client bundle.
+5. **Run on device/emulator**
+   - Press `a` for Android
+   - Press `i` for iOS
+   - Press `w` for Web
+   - Scan QR with [Expo Go](https://expo.dev/go)
 
 ---
 
-## Project Structure
+## 📸 Screenshots
 
-```
-cineverse-ai/
-├── app/                      # Expo Router pages (file-based routing)
-│   ├── (tabs)/               # Bottom tab navigation
-│   │   ├── index.tsx         #   Home tab
-│   │   ├── discover.tsx      #   Discover tab (movies + anime)
-│   │   ├── watchlist.tsx     #   Watchlist tab
-│   │   └── profile.tsx       #   Profile tab
-│   ├── aiscreen/             # AI recommendation chat screen
-│   ├── anime/                # Anime detail screens
-│   ├── auth/                 # OAuth callback handlers
-│   ├── authscreen/           # Login & signup screens
-│   ├── movies/               # Movie detail screens
-│   ├── profile/              # Profile sub-screens (preferences, account, billing)
-│   ├── _layout.tsx           # Root layout with theme & auth provider
-│   └── splash.tsx            # Splash screen
-├── contexts/                 # React Context providers
-│   └── AuthContext.tsx       # Authentication context
-├── lib/                      # Utilities and API clients
-│   ├── ai/                   # AI-related helpers
-│   ├── appwrite.ts           # Appwrite client config
-│   ├── auth.ts               # Auth API calls
-│   ├── gemini.ts             # Google Gemini integration
-│   ├── icons.tsx             # SVG icon components
-│   ├── jikan.ts              # Jikan (anime) API client
-│   ├── tmdb.ts               # TMDB (movie) API client
-│   ├── watchlist.ts          # Watchlist CRUD operations
-│   └── watchlistEvents.ts    # Watchlist event emitter
-├── assets/                   # Images, fonts, and static assets
-├── app.json                  # Expo configuration
-├── package.json              # Dependencies and scripts
-├── tailwind.config.js        # Tailwind CSS configuration
-├── tsconfig.json             # TypeScript configuration
-└── .env                      # Environment variables (not committed)
+<div align="center">
+
+| Home | Discover | Social | AI Chat |
+|:----:|:--------:|:------:|:-------:|
+| ![Home](screenshots/home.png) | ![Discover](screenshots/discover.png) | ![Social](screenshots/social.png) | ![AI](screenshots/ai.png) |
+
+| Watchlist | Reviews | Filters | Profile |
+|:---------:|:-------:|:-------:|:-------:|
+| ![Watchlist](screenshots/watchlist.png) | ![Reviews](screenshots/reviews.png) | ![Filters](screenshots/filters.png) | ![Profile](screenshots/profile.png) |
+
+</div>
+
+---
+
+## 🧪 Testing
+
+```bash
+# Run linting
+npm run lint
+
+# Run type checking
+npx tsc --noEmit
+
+# Run tests (when implemented)
+npm test
 ```
 
 ---
 
-## How It Works
+## 📈 Performance Optimizations
 
-### AI Recommendation Flow
-
-1. User describes what they want to watch in natural language
-2. **Gemini 1.5 Flash** processes the query and returns 5-7 movie titles with reasons
-3. CineVerse searches **TMDB** for each title and matches the best results
-4. Recommendations are displayed with match percentages, mood tags, and AI reasoning
-5. If Gemini is unavailable, a local mood-detection engine provides curated fallback picks
-
-### Authentication Flow
-
-1. User signs up or logs in via email/password or Google OAuth
-2. **Appwrite** handles authentication, session management, and user data
-3. Auth state is managed globally through `AuthContext`
-4. App gracefully degrades to offline mode if the backend is unavailable
+- **Image Caching** - Expo Image with automatic caching
+- **Lazy Loading** - Components load on demand
+- **Optimistic Updates** - Instant UI feedback
+- **Memoization** - React.memo for expensive renders
+- **Debounced Search** - Reduced API calls
+- **Circuit Breaker** - AI service resilience
 
 ---
 
-## Contributing
+## 🔒 Security Features
+
+- **API Key Sanitization** - Automatic redaction in AI responses
+- **Input Validation** - Query sanitization and length limits
+- **Auth Guards** - Protected routes and actions
+- **Error Handling** - No sensitive data in error messages
+
+---
+
+## 🤝 Contributing
 
 Contributions are welcome! Please follow these steps:
 
@@ -209,27 +277,26 @@ Contributions are welcome! Please follow these steps:
 5. Open a Pull Request
 
 Please ensure your code passes linting:
-
 ```bash
 npm run lint
 ```
 
 ---
 
-## License
+## 📝 License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## Acknowledgments
+## 🙏 Acknowledgments
 
-- [Expo](https://expo.dev) — Cross-platform React Native framework
-- [TMDB](https://www.themoviedb.org) — Movie and TV show data
-- [Jikan](https://jikan.moe) — Unofficial MyAnimeList REST API
-- [Google Gemini](https://ai.google.dev) — Generative AI for recommendations
-- [Appwrite](https://appwrite.io) — Open-source backend platform
-- [NativeWind](https://www.nativewind.dev) — Tailwind CSS for React Native
+- [Expo](https://expo.dev) - Cross-platform React Native framework
+- [TMDB](https://www.themoviedb.org) - Movie and TV show data
+- [Jikan](https://jikan.moe) - Unofficial MyAnimeList REST API
+- [Google Gemini](https://ai.google.dev) - Generative AI for recommendations
+- [Appwrite](https://appwrite.io) - Open-source backend platform
+- [NativeWind](https://www.nativewind.dev) - Tailwind CSS for React Native
 
 ---
 
@@ -237,7 +304,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 **[⬆ Back to Top](#cineverse-ai)**
 
-Made with care for movie & anime lovers.
+Made with ❤️ for entertainment enthusiasts.
 
 </div>
 

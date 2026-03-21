@@ -119,3 +119,80 @@ export const formatRuntime = (minutes: number): string => {
   const m = minutes % 60;
   return `${h}h ${m}m`;
 };
+
+// ============================================================================
+// ADVANCED SEARCH
+// ============================================================================
+
+export interface AdvancedSearchParams {
+  page?: number
+  year?: number | null
+  genreIds?: number[]
+  minRating?: number
+  sortBy?: string
+  language?: string
+  includeAdult?: boolean
+}
+
+export const discoverMovies = async (params: AdvancedSearchParams = {}): Promise<{ results: Movie[]; total_pages: number; total_results: number }> => {
+  const queryParams: Record<string, any> = {
+    page: params.page || 1,
+    language: 'en-US',
+    sort_by: params.sortBy || 'popularity.desc',
+    include_adult: params.includeAdult || false,
+    include_video: false
+  }
+
+  if (params.year) {
+    queryParams.primary_release_year = params.year
+  }
+
+  if (params.genreIds && params.genreIds.length > 0) {
+    queryParams.with_genres = params.genreIds.join(',')
+  }
+
+  if (params.minRating && params.minRating > 0) {
+    queryParams.vote_average_gte = params.minRating
+    queryParams.vote_count_gte = 100 // Ensure minimum vote count for relevance
+  }
+
+  if (params.language) {
+    queryParams.with_original_language = params.language
+  }
+
+  return fetchFromTMDB('/discover/movie', queryParams)
+}
+
+export const getMoviesByGenre = async (genreId: number, page: number = 1): Promise<{ results: Movie[] }> => {
+  return fetchFromTMDB('/discover/movie', {
+    page,
+    language: 'en-US',
+    with_genres: genreId,
+    sort_by: 'popularity.desc'
+  })
+}
+
+export const getUpcomingMovies = async (page: number = 1): Promise<{ results: Movie[] }> => {
+  return fetchFromTMDB('/movie/upcoming', { page, language: 'en-US' })
+}
+
+export const getTopRatedMovies = async (page: number = 1): Promise<{ results: Movie[] }> => {
+  return fetchFromTMDB('/movie/top_rated', { page, language: 'en-US' })
+}
+
+export const getSimilarMovies = async (movieId: number, page: number = 1): Promise<{ results: Movie[] }> => {
+  return fetchFromTMDB(`/movie/${movieId}/similar`, { page, language: 'en-US' })
+}
+
+export const getMovieVideos = async (movieId: number): Promise<{ results: Video[] }> => {
+  return fetchFromTMDB(`/movie/${movieId}/videos`, { language: 'en-US' })
+}
+
+export interface Video {
+  id: string
+  key: string
+  name: string
+  site: string
+  type: string
+  official: boolean
+}

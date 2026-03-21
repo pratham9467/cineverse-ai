@@ -1,10 +1,12 @@
 import { DarkTheme, ThemeProvider } from "@react-navigation/native";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { useEffect, useState } from 'react';
-import { useRouter } from 'expo-router';
 import './global.css';
 import Splash from './splash';
 import { AuthProvider, useAuth } from '../contexts/AuthContext';
+import { SocialProvider } from '../contexts/SocialContext';
+import { ReviewsProvider } from '../contexts/ReviewsContext';
+import { CollectionsProvider } from '../contexts/CollectionsContext';
 
 const CineverseTheme = {
   ...DarkTheme,
@@ -21,34 +23,38 @@ const CineverseTheme = {
 };
 
 function AppContent() {
-  const [appReady, setAppReady] = useState(false);
+  const [showSplash, setShowSplash] = useState(true);
   const { isLoading, isLoggedIn } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    // Simulate app initialization
+    console.log('[App] Starting splash timer - 4.5 seconds')
+    
+    // Show splash for 2.5 seconds
     const timer = setTimeout(() => {
-      setAppReady(true);
-    }, 3000);
+      console.log('[App] Splash timer complete, hiding splash')
+      setShowSplash(false)
+    }, 2500)
 
-    return () => clearTimeout(timer);
-  }, []);
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
-    if (appReady && !isLoading) {
-      // Redirect to login if not logged in
-      if (!isLoggedIn) {
-        router.replace('/authscreen/login');
+    if (!showSplash && !isLoading) {
+      console.log('[App] Navigating - isLoggedIn:', isLoggedIn)
+      // Navigate based on auth state
+      if (isLoggedIn) {
+        router.replace('/(tabs)')
+      } else {
+        router.replace('/authscreen/login')
       }
     }
-  }, [appReady, isLoading, isLoggedIn, router]);
+  }, [showSplash, isLoading, isLoggedIn, router])
 
-  if (!appReady) {
-    return <Splash />;
-  }
-
-  if (isLoading) {
-    return <Splash />;
+  // Show splash screen for 4.5 seconds
+  if (showSplash) {
+    console.log('[App] Showing splash screen')
+    return <Splash />
   }
 
   return (
@@ -64,6 +70,7 @@ function AppContent() {
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="movies/[id]" />
       <Stack.Screen name="anime/[id]" />
+      <Stack.Screen name="reviews/[movieId]" />
       <Stack.Screen name="aiscreen/aiscreen" />
       <Stack.Screen name="profile/preferences" />
       <Stack.Screen name="profile/account" />
@@ -71,6 +78,8 @@ function AppContent() {
       <Stack.Screen name="authscreen/login" options={{ gestureEnabled: false }} />
       <Stack.Screen name="authscreen/signup" />
       <Stack.Screen name="auth/google/callback" options={{ gestureEnabled: false }} />
+      <Stack.Screen name="logo-demo" />
+      <Stack.Screen name="adobe-logo-showcase" />
     </Stack>
   );
 }
@@ -79,7 +88,13 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={CineverseTheme}>
       <AuthProvider>
-        <AppContent />
+        <SocialProvider>
+          <ReviewsProvider>
+            <CollectionsProvider>
+              <AppContent />
+            </CollectionsProvider>
+          </ReviewsProvider>
+        </SocialProvider>
       </AuthProvider>
     </ThemeProvider>
   );

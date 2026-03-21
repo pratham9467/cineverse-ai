@@ -13,9 +13,12 @@ import {
   getImageUrl,
   getPopularMovies,
   Movie,
-  searchMovies
+  searchMovies,
+  discoverMovies,
+  AdvancedSearchParams
 } from "@/lib/tmdb";
 import { searchInputIcon as searchIcon, aistarsSvgWhite, notificationIcon, sortIcon } from "@/lib/icons";
+import { FilterModal, FilterOptions } from "@/components/FilterModal";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -138,6 +141,21 @@ const Discover = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedGenre, setSelectedGenre] = useState<number | null>(null);
   const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  
+  // Advanced filter state
+  const [filterModalVisible, setFilterModalVisible] = useState(false);
+  const [filters, setFilters] = useState<FilterOptions>({
+    year: null,
+    genreIds: [],
+    minRating: 0,
+    maxRating: 10,
+    minRuntime: null,
+    maxRuntime: null,
+    sortBy: 'popularity.desc',
+    language: '',
+    includeAdult: false
+  });
+  const [activeFiltersCount, setActiveFiltersCount] = useState(0);
 
   useEffect(() => {
     if (activeTab === "movies") {
@@ -227,6 +245,64 @@ const Discover = () => {
     }
   };
 
+  const handleApplyFilters = async (newFilters: FilterOptions) => {
+    setFilters(newFilters);
+    
+    // Count active filters
+    let count = 0;
+    if (newFilters.year) count++;
+    if (newFilters.genreIds.length > 0) count++;
+    if (newFilters.minRating > 0) count++;
+    if (newFilters.language) count++;
+    if (newFilters.sortBy !== 'popularity.desc') count++;
+    setActiveFiltersCount(count);
+    
+    // Apply filters for movies
+    if (activeTab === "movies") {
+      setLoading(true);
+      try {
+        const params: AdvancedSearchParams = {
+          page: 1,
+          year: newFilters.year,
+          genreIds: newFilters.genreIds.length > 0 ? newFilters.genreIds : 
+                    selectedGenre ? [selectedGenre] : undefined,
+          minRating: newFilters.minRating,
+          sortBy: newFilters.sortBy,
+          language: newFilters.language || undefined,
+          includeAdult: newFilters.includeAdult
+        };
+        const data = await discoverMovies(params);
+        setMovies(data.results);
+      } catch (error) {
+        console.error("Error applying filters:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleResetFilters = () => {
+    const defaultFilters: FilterOptions = {
+      year: null,
+      genreIds: [],
+      minRating: 0,
+      maxRating: 10,
+      minRuntime: null,
+      maxRuntime: null,
+      sortBy: 'popularity.desc',
+      language: '',
+      includeAdult: false
+    };
+    setFilters(defaultFilters);
+    setActiveFiltersCount(0);
+    setSelectedGenre(null);
+    if (activeTab === "movies") {
+      loadMoviesData();
+    } else if (activeTab === "anime") {
+      loadAnimeData();
+    }
+  };
+
   return (
     <View className="flex-1 bg-background">
       <View className="bg-background px-4 pt-12 pb-4">
@@ -274,11 +350,19 @@ const Discover = () => {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity className="flex-row items-center gap-1.5">
+          <TouchableOpacity 
+            className="flex-row items-center gap-1.5"
+            onPress={() => setFilterModalVisible(true)}
+          >
             <SvgXml xml={sortIcon} width={12} height={8} />
             <Text className="text-text-muted text-xs font-medium">
-              Sort: Trending
+              {activeFiltersCount > 0 ? `${activeFiltersCount} Filters` : 'Filters'}
             </Text>
+            {activeFiltersCount > 0 && (
+              <View className="w-5 h-5 rounded-full bg-primary items-center justify-center">
+                <Text className="text-white text-xs font-bold">{activeFiltersCount}</Text>
+              </View>
+            )}
           </TouchableOpacity>
         </View>
 
@@ -340,6 +424,17 @@ const Discover = () => {
         )}
       </ScrollView>
       <AnimatedButton onPress={() => router.push("/aiscreen/aiscreen" as any)} />
+      
+      {/* Filter Modal */}
+      <FilterModal
+        visible={filterModalVisible}
+        onClose={() => setFilterModalVisible(false)}
+        onApply={handleApplyFilters}
+        onReset={handleResetFilters}
+        currentFilters={filters}
+        genres={genres}
+        contentType={activeTab as 'movies' | 'anime'}
+      />
     </View>
   );
 };
