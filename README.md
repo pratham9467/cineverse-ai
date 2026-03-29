@@ -103,7 +103,7 @@
 
 ---
 
-## 📸 Screenshots
+## 📸 Screens
 
 <div align="center">
 
