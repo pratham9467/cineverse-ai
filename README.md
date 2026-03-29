@@ -1,10 +1,12 @@
 <div align="center">
 
+<img src="assets/images/cineverse_logo.png" alt="CineVerse AI Logo" width="120" height="120">
+
 # CineVerse AI
 
-### Your AI-Powered Entertainment Discovery Platform
+### Your AI-Powered Entertainment Companion
 
-**Discover, Connect, and Experience Entertainment Like Never Before**
+**Discover movies & anime through intelligent recommendations and social connections**
 
 [![Expo][expo-badge]][expo-url]
 [![React Native][rn-badge]][rn-url]
@@ -12,121 +14,185 @@
 [![Appwrite][appwrite-badge]][appwrite-url]
 [![License][license-badge]](LICENSE)
 
-[Features](#features) • [Architecture](#architecture) • [Tech Stack](#tech-stack) • [Getting Started](#getting-started) • [Screenshots](#screenshots) • [Contributing](#contributing)
+[Features](#-features) • [Screenshots](#-screenshots) • [Architecture](#-architecture) • [Tech Stack](#-tech-stack) • [Getting Started](#-getting-started)
 
 </div>
 
 ---
 
-## 🎯 About
+## 📱 About
 
-**CineVerse AI** is a full-featured, cross-platform entertainment discovery app that combines **AI-powered recommendations** with **social features** to create the ultimate movie and anime companion. Built with React Native and Expo, it demonstrates advanced patterns including state management, real-time data synchronization, and seamless user experiences.
+**CineVerse AI** is a beautifully designed, cross-platform entertainment discovery app that combines **AI-powered recommendations** with **social features** to create the ultimate movie and anime companion. Built with React Native and Expo, it delivers a native experience on iOS, Android, and Web from a single codebase.
 
-### Key Differentiators
-- 🤖 **AI Recommendations** - Natural language processing with Google Gemini/Ollama
-- 👥 **Social Features** - Activity feed, following, and user discovery
-- ⭐ **Reviews & Ratings** - Community-driven review system with engagement
-- 🔍 **Advanced Filtering** - Multi-criteria search with year, genre, rating filters
-- 📚 **Collections** - Personal playlists for organized movie tracking
-- 🎬 **Cross-Platform** - Single codebase for iOS, Android, and Web
+### 🎯 Key Highlights
+
+| Feature | Description |
+|---------|-------------|
+| 🤖 **AI Recommendations** | Natural language queries powered by Google Gemini with intelligent fallback |
+| 🎬 **Dual Content Mode** | Seamlessly switch between Movies and Anime |
+| 🎥 **Video Trailers** | Auto-playing YouTube trailers in hero sections |
+| 👥 **Social Features** | Activity feed, follow system, user discovery |
+| ⭐ **Reviews & Ratings** | Community-driven review system with engagement |
+| 🔍 **Advanced Filters** | Year, genre, rating, language, and more |
+| 📚 **Watchlist** | Track what you're watching with status management |
+| 🌙 **Cinematic Dark UI** | Immersive dark theme with smooth animations |
 
 ---
 
 ## ✨ Features
 
-### Core Features
-| Feature | Description |
-|---------|-------------|
-| **AI Recommendations** | Natural language queries powered by Google Gemini with fallback mechanisms |
-| **Movie Discovery** | Browse trending, popular, top-rated, now playing, and upcoming movies via TMDB |
-| **Anime Discovery** | Explore top and seasonal anime with detailed info from Jikan API |
-| **Smart Watchlist** | Save movies and anime with status tracking (Watching, Completed) |
-| **User Authentication** | Secure email/password and Google OAuth via Appwrite |
-| **Dark Theme UI** | Immersive cinematic dark mode with smooth Reanimated 4 animations |
+### 🎬 Movie Discovery
 
-### Social Features (NEW)
-| Feature | Description |
-|---------|-------------|
-| **Activity Feed** | See what friends are watching, rating, and reviewing |
-| **Follow System** | Follow other users and build your community |
-| **User Profiles** | View user stats, reviews, and activity history |
-| **User Discovery** | Find and follow users with similar tastes |
+- **Trending Movies** - Real-time trending content from TMDB
+- **Now Playing** - Currently in theaters
+- **Popular & Top Rated** - Curated collections
+- **Upcoming** - Anticipated releases
+- **Video Trailers** - YouTube trailers auto-play in hero
 
-### Reviews & Ratings (NEW)
-| Feature | Description |
-|---------|-------------|
-| **Star Ratings** | Rate movies on a 5-star scale |
-| **Written Reviews** | Share detailed thoughts with the community |
-| **Like System** | Engage with reviews you find helpful |
-| **Review Sorting** | Sort by recent or most popular |
-| **Average Ratings** | See aggregated community scores |
+### 🌸 Anime Discovery
 
-### Advanced Search (NEW)
-| Feature | Description |
-|---------|-------------|
-| **Year Filter** | Filter by release year (1975-2026) |
-| **Genre Filter** | Multi-select genre filtering |
-| **Rating Filter** | Minimum rating threshold |
-| **Sort Options** | 8 sorting options (popularity, rating, date, etc.) |
-| **Language Filter** | Filter by original language |
-| **Adult Content Toggle** | Control explicit content visibility |
+- **Seasonal Anime** - Current season's top anime
+- **Top Rated** - All-time best anime
+- **Detailed Info** - Synopsis, episodes, status, studios
 
-### Collections (NEW)
-| Feature | Description |
-|---------|-------------|
-| **Custom Playlists** | Create themed movie collections |
-| **Public/Private** | Share collections or keep them private |
-| **Collection Management** | Add, remove, and reorder items |
-| **Cover Images** | Visual collection covers |
+### 🤖 AI-Powered Recommendations
+
+```
+"Something like Inception but more recent"
+"Feel-good movies for a Sunday afternoon"
+"Mind-bending thrillers that will blow my mind"
+```
+
+- Natural language processing
+- Match percentage for each recommendation
+- "Surprise Me" random prompt feature
+- Quick suggestion chips
+- Multi-provider support (Gemini, Ollama)
+
+### 🔍 Advanced Search & Filters
+
+| Filter | Options |
+|--------|---------|
+| **Year** | 1975 - 2026 |
+| **Genre** | Multi-select from all genres |
+| **Rating** | Minimum rating threshold |
+| **Sort By** | 8 options (popularity, rating, date, etc.) |
+| **Language** | Original language filter |
+| **Adult Content** | Toggle visibility |
+
+### 👥 Social Features
+
+- **Activity Feed** - See what friends are watching
+- **Follow System** - Build your community
+- **User Profiles** - Stats, reviews, activity history
+- **User Discovery** - Find users with similar tastes
+
+### ⭐ Reviews & Ratings
+
+- 5-star rating system
+- Written reviews with engagement
+- Like system for helpful reviews
+- Sort by recent or popular
+- Average community ratings
+
+### 📚 Watchlist Management
+
+- **Status Tracking** - Watching, Completed, Plan to Watch
+- **Quick Actions** - Add/remove with one tap
+- **Personal Collections** - Organize your content
+
+---
+
+## 📸 Screenshots
+
+<div align="center">
+
+### 🏠 Home & Discovery
+
+| Home - Movies | Home - Anime | Discover | AI Recommendations |
+|:-------------:|:------------:|:--------:|:------------------:|
+| <img src="screenshots/home-movies.png" width="200" alt="Home Movies"> | <img src="screenshots/home-anime.png" width="200" alt="Home Anime"> | <img src="screenshots/discover.png" width="200" alt="Discover"> | <img src="screenshots/ai-chat.png" width="200" alt="AI Chat"> |
+
+### 🎯 Features
+
+| Social Feed | Filters | Watchlist | Movie Details |
+|:-----------:|:-------:|:---------:|:--------------:|
+| <img src="screenshots/social.png" width="200" alt="Social"> | <img src="screenshots/filters.png" width="200" alt="Filters"> | <img src="assets/images/Watchlist.jpg" width="200" alt="Watchlist"> | <img src="assets/images/detailscreen.jpg" width="200" alt="Movie Detail"> |
+
+### 📱 More Screens
+
+| Profile | Login | Trailer Playback | Anime Details |
+|:-------:|:-----:|:----------------:|:-------------:|
+| <img src="screenshots/profile.png" width="200" alt="Profile"> | <img src="screenshots/login.png" width="200" alt="Login"> | <img src="screenshots/trailer.png" width="200" alt="Trailer"> | <img src="screenshots/anime-detail.png" width="200" alt="Anime Detail"> |
+
+</div>
+
+> 📝 **Note:** Add your screenshots to the `screenshots/` directory with the filenames above to display them in the README.
 
 ---
 
 ## 🏗️ Architecture
 
-### Clean Architecture Pattern
+### Project Structure
+
 ```
-├── app/                    # Expo Router pages (file-based routing)
-│   ├── (tabs)/            # Bottom tab navigation
-│   │   ├── index.tsx      # Home tab
-│   │   ├── discover.tsx   # Search & discovery
-│   │   ├── social.tsx     # Activity feed (NEW)
-│   │   ├── watchlist.tsx  # Personal watchlist
-│   │   └── profile.tsx    # User profile
-│   ├── aiscreen/          # AI recommendation chat
-│   ├── reviews/           # Review system (NEW)
-│   ├── collections/       # Collections management (NEW)
-│   ├── movies/            # Movie detail screens
-│   ├── anime/             # Anime detail screens
-│   ├── profile/           # Profile sub-screens
-│   └── auth/              # Authentication screens
-├── components/            # Reusable components
-│   └── FilterModal.tsx    # Advanced filter modal (NEW)
-├── contexts/              # React Context providers
-│   ├── AuthContext.tsx    # Authentication state
-│   ├── SocialContext.tsx  # Social features (NEW)
-│   ├── ReviewsContext.tsx # Reviews system (NEW)
-│   └── CollectionsContext.tsx # Collections (NEW)
-├── lib/                   # Utilities and API clients
-│   ├── ai/                # AI service integration
-│   ├── social.ts          # Social API functions (NEW)
-│   ├── appwrite.ts        # Appwrite client config
-│   ├── tmdb.ts            # TMDB API client
-│   ├── jikan.ts           # Jikan (anime) API client
-│   └── watchlist.ts       # Watchlist CRUD operations
-└── assets/                # Images, fonts, static assets
+├── app/                          # Expo Router (file-based routing)
+│   ├── (tabs)/                   # Bottom tab navigation
+│   │   ├── index.tsx             # Home screen (Movies/Anime toggle)
+│   │   ├── discover.tsx          # Search & discovery
+│   │   ├── social.tsx            # Activity feed
+│   │   ├── watchlist.tsx         # Personal watchlist
+│   │   └── profile.tsx           # User profile
+│   ├── aiscreen/                 # AI recommendation chat
+│   ├── movies/[id].tsx           # Movie detail screen
+│   ├── anime/[id].tsx            # Anime detail screen
+│   ├── reviews/[movieId].tsx     # Reviews screen
+│   ├── authscreen/               # Authentication screens
+│   └── player/[id].tsx           # Video player
+├── components/                   # Reusable UI components
+│   └── FilterModal.tsx          # Advanced filter modal
+├── contexts/                     # React Context providers
+│   ├── AuthContext.tsx           # Authentication state
+│   ├── SocialContext.tsx         # Social features
+│   ├── ReviewsContext.tsx        # Reviews system
+│   ├── CollectionsContext.tsx    # Collections management
+│   └── ThemeModeContext.tsx      # Theme management
+├── lib/                          # Utilities & API clients
+│   ├── ai/                       # AI service integration
+│   ├── tmdb.ts                   # TMDB API client
+│   ├── jikan.ts                  # Jikan (anime) API client
+│   ├── social.ts                 # Social API functions
+│   ├── appwrite.ts               # Appwrite client config
+│   └── watchlist.ts              # Watchlist CRUD
+└── assets/                       # Images, fonts, SVGs
 ```
 
-### State Management Strategy
-- **React Context** for global state (auth, social, reviews, collections)
-- **Custom Hooks** for reusable logic
-- **Optimistic Updates** for instant UI feedback
-- **Error Boundaries** for graceful degradation
+### State Management
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     React Context                           │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐ │
+│  │ AuthContext │  │SocialContext│  │ ThemeModeContext     │ │
+│  └─────────────┘  └─────────────┘  └─────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   Custom Hooks                              │
+│  • useAuth()        • useSocial()     • useThemeMode()      │
+│  • useWatchlist()   • useReviews()    • useCollections()    │
+└─────────────────────────────────────────────────────────────┘
+```
 
 ### Data Flow
+
 ```
-User Action → Context Handler → API Call → Local State Update → UI Render
-                    ↓
-            Optimistic Update → Error Handling → Rollback if needed
+User Action → Context Handler → API Call → State Update → UI Render
+     │              │                │            │
+     └──────────────┴────────────────┴────────────┴──→ Optimistic Update
+                                        │
+                                        └──→ Error Handling & Rollback
 ```
 
 ---
@@ -134,50 +200,52 @@ User Action → Context Handler → API Call → Local State Update → UI Rende
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 | Technology | Purpose |
 |------------|---------|
-| **React Native 0.81** | Cross-platform mobile framework |
-| **Expo SDK 54** | Development platform & tools |
-| **TypeScript 5.9** | Type safety and developer experience |
-| **Expo Router 6** | File-based navigation |
-| **NativeWind 4** | Tailwind CSS for React Native |
-| **Reanimated 4** | Smooth animations |
-| **React Navigation 7** | Navigation primitives |
+| ![React Native][rn-icon] **React Native 0.81** | Cross-platform mobile framework |
+| ![Expo][expo-icon] **Expo SDK 54** | Development platform & tools |
+| ![TypeScript][ts-icon] **TypeScript 5.9** | Type safety & developer experience |
+| ![Expo Router][router-icon] **Expo Router 6** | File-based navigation |
+| ![NativeWind][nativewind-icon] **NativeWind 4** | Tailwind CSS for React Native |
+| ![Reanimated][reanimated-icon] **Reanimated 4** | 60fps animations |
+| ![React Navigation][nav-icon] **React Navigation 7** | Navigation primitives |
 
 ### Backend & Services
-| Technology | Purpose |
-|------------|---------|
-| **Appwrite** | Authentication, database, storage |
-| **TMDB API** | Movie data and images |
-| **Jikan API** | Anime data from MyAnimeList |
-| **Google Gemini** | AI-powered recommendations |
-| **Ollama Cloud** | Alternative AI provider |
+
+| Service | Purpose |
+|---------|---------|
+| ![Appwrite][appwrite-icon] **Appwrite** | Authentication, database, storage |
+| ![TMDB][tmdb-icon] **TMDB API** | Movie data, images, videos |
+| ![Jikan][jikan-icon] **Jikan API** | Anime data from MyAnimeList |
+| ![Gemini][gemini-icon] **Google Gemini** | AI-powered recommendations |
 
 ### Development Tools
+
 | Tool | Purpose |
 |------|---------|
 | **ESLint** | Code linting |
 | **Prettier** | Code formatting |
 | **EAS Build** | App store builds |
-| **Sentry** | Error monitoring (recommended) |
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - **Node.js** >= 18
 - **npm** or **yarn**
 - **Expo CLI** (`npm install -g expo-cli`)
 - **Appwrite project** (self-hosted or [Appwrite Cloud](https://cloud.appwrite.io))
-- **TMDB API key** ([get one here](https://www.themoviedb.org/documentation/api))
-- **Google Gemini API key** ([get one here](https://makersuite.google.com/app/apikey))
+- **TMDB API key** ([get here](https://www.themoviedb.org/documentation/api))
+- **Google Gemini API key** ([get here](https://makersuite.google.com/app/apikey))
 
 ### Installation
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/cineverse-ai.git
+   git clone https://github.com/YOUR_USERNAME/cineverse-ai.git
    cd cineverse-ai
    ```
 
@@ -187,13 +255,15 @@ User Action → Context Handler → API Call → Local State Update → UI Rende
    ```
 
 3. **Set up environment variables**
+
+   Create a `.env` file in the root directory:
    ```env
    # TMDB API
    EXPO_PUBLIC_TMDB_API_KEY=your_tmdb_bearer_token
-   
+
    # Google Gemini AI
    EXPO_PUBLIC_GEMINI_API_KEY=your_gemini_api_key
-   
+
    # Appwrite
    EXPO_PUBLIC_APPWRITE_PROJECT_ID=your_project_id
    EXPO_PUBLIC_APPWRITE_ENDPOINT=https://cloud.appwrite.io/v1
@@ -215,19 +285,27 @@ User Action → Context Handler → API Call → Local State Update → UI Rende
 
 ---
 
-## 📸 Screenshots
+## 📱 Building for Production
 
-<div align="center">
+### Android
 
-| Home | Discover | Social | AI Chat |
-|:----:|:--------:|:------:|:-------:|
-| ![Home](screenshots/home.png) | ![Discover](screenshots/discover.png) | ![Social](screenshots/social.png) | ![AI](screenshots/ai.png) |
+```bash
+# Build APK
+eas build --platform android
 
-| Watchlist | Reviews | Filters | Profile |
-|:---------:|:-------:|:-------:|:-------:|
-| ![Watchlist](screenshots/watchlist.png) | ![Reviews](screenshots/reviews.png) | ![Filters](screenshots/filters.png) | ![Profile](screenshots/profile.png) |
+# Build App Bundle (Play Store)
+eas build --platform android --profile production
+```
 
-</div>
+### iOS
+
+```bash
+# Build for TestFlight
+eas build --platform ios
+
+# Build for App Store
+eas build --platform ios --profile production
+```
 
 ---
 
@@ -239,30 +317,43 @@ npm run lint
 
 # Run type checking
 npx tsc --noEmit
-
-# Run tests (when implemented)
-npm test
 ```
 
 ---
 
 ## 📈 Performance Optimizations
 
-- **Image Caching** - Expo Image with automatic caching
-- **Lazy Loading** - Components load on demand
-- **Optimistic Updates** - Instant UI feedback
-- **Memoization** - React.memo for expensive renders
-- **Debounced Search** - Reduced API calls
-- **Circuit Breaker** - AI service resilience
+| Optimization | Implementation |
+|--------------|----------------|
+| **Image Caching** | Expo Image with automatic caching |
+| **Lazy Loading** | Components load on demand |
+| **Optimistic Updates** | Instant UI feedback |
+| **Memoization** | React.memo for expensive renders |
+| **Debounced Search** | Reduced API calls (500ms) |
+| **Circuit Breaker** | AI service resilience with fallback |
+| **FlatList Optimization** | Virtualized lists for performance |
 
 ---
 
 ## 🔒 Security Features
 
-- **API Key Sanitization** - Automatic redaction in AI responses
-- **Input Validation** - Query sanitization and length limits
-- **Auth Guards** - Protected routes and actions
-- **Error Handling** - No sensitive data in error messages
+| Feature | Implementation |
+|---------|----------------|
+| **API Key Sanitization** | Automatic redaction in AI responses |
+| **Input Validation** | Query sanitization & length limits |
+| **Auth Guards** | Protected routes and actions |
+| **Error Handling** | No sensitive data in error messages |
+
+---
+
+## 🎨 Design Highlights
+
+- **Cinematic Dark Theme** - Immersive viewing experience
+- **Smooth Animations** - Reanimated 4 powered transitions
+- **Responsive Layout** - Adapts to all screen sizes
+- **Mode Toggle** - Movies (cyan) vs Anime (purple) theming
+- **Floating AI Button** - Quick access to AI recommendations
+- **Bottom Sheets** - Native-feeling modal experiences
 
 ---
 
@@ -304,17 +395,32 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **[⬆ Back to Top](#cineverse-ai)**
 
-Made with ❤️ for entertainment enthusiasts.
+Made with ❤️ for entertainment enthusiasts
+
+⭐ If you like this project, give it a star! ⭐
 
 </div>
 
 <!-- Badge Links -->
-[expo-badge]: https://img.shields.io/badge/Expo-54-000020?style=flat-square&logo=expo&logoColor=white
+[expo-badge]: https://img.shields.io/badge/Expo-54-000020?style=for-the-badge&logo=expo&logoColor=white
 [expo-url]: https://expo.dev
-[rn-badge]: https://img.shields.io/badge/React_Native-0.81-blue?style=flat-square&logo=react&logoColor=white
+[rn-badge]: https://img.shields.io/badge/React_Native-0.81-61DAFB?style=for-the-badge&logo=react&logoColor=white
 [rn-url]: https://reactnative.dev
-[ts-badge]: https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript&logoColor=white
+[ts-badge]: https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&logo=typescript&logoColor=white
 [ts-url]: https://www.typescriptlang.org
-[appwrite-badge]: https://img.shields.io/badge/Appwrite-FD366E?style=flat-square&logo=appwrite&logoColor=white
+[appwrite-badge]: https://img.shields.io/badge/Appwrite-FD366E?style=for-the-badge&logo=appwrite&logoColor=white
 [appwrite-url]: https://appwrite.io
-[license-badge]: https://img.shields.io/badge/License-MIT-green?style=flat-square
+[license-badge]: https://img.shields.io/badge/License-MIT-green?style=for-the-badge
+
+<!-- Tech Stack Icons -->
+[rn-icon]: https://img.shields.io/badge/-React_Native-61DAFB?style=flat-square&logo=react&logoColor=white
+[expo-icon]: https://img.shields.io/badge/-Expo-000020?style=flat-square&logo=expo&logoColor=white
+[ts-icon]: https://img.shields.io/badge/-TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white
+[router-icon]: https://img.shields.io/badge/-Expo_Router-000020?style=flat-square&logo=expo&logoColor=white
+[nativewind-icon]: https://img.shields.io/badge/-NativeWind-38BDF8?style=flat-square&logo=tailwindcss&logoColor=white
+[reanimated-icon]: https://img.shields.io/badge/-Reanimated-61DAFB?style=flat-square&logo=react&logoColor=white
+[nav-icon]: https://img.shields.io/badge/-React_Navigation-6B52AD?style=flat-square&logo=react&logoColor=white
+[appwrite-icon]: https://img.shields.io/badge/-Appwrite-FD366E?style=flat-square&logo=appwrite&logoColor=white
+[tmdb-icon]: https://img.shields.io/badge/-TMDB-01B4E4?style=flat-square&logo=themoviedatabase&logoColor=white
+[jikan-icon]: https://img.shields.io/badge/-Jikan-2E51A2?style=flat-square&logo=myanimelist&logoColor=white
+[gemini-icon]: https://img.shields.io/badge/-Gemini-4285F4?style=flat-square&logo=google&logoColor=white
