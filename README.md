@@ -121,9 +121,9 @@
 
 ### 📱 More Screens
 
-| Profile | Login | Trailer Playback | Anime Details |
-|:-------:|:-----:|:----------------:|:-------------:|
-| <img src="screenshots/ai-chat.png" width="200" alt="AI Chat">| <img src="screenshots/login.png" width="200" alt="Login"> | <img src="screenshots/trailer.png" width="200" alt="Trailer"> | <img src="screenshots/anime-detail.png" width="200" alt="Anime Detail"> |
+| Profile | Anime Screen | Login | Trailer |
+|:-------:|:------------:|:-----:|:-------:|
+| <img src="assets/images/Profile.jpg" width="200" alt="Profile"> | <img src="assets/images/animescreen.jpg" width="200" alt="Anime Screen"> | <img src="screenshots/login.png" width="200" alt="Login"> | <img src="screenshots/trailer.png" width="200" alt="Trailer"> |
 
 </div>
 
