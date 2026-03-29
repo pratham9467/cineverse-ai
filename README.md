@@ -109,7 +109,7 @@
 
 ### 🏠 Home & Discovery
 
-| Home - Movies | Home - Anime | Discover | AI Recommendations |
+| Home - Movies | Home - Movie | Home - Anime | AI Recommendations |
 |:-------------:|:------------:|:--------:|:------------------:|
 | <img src="screenshots/home-movies.png" width="200" alt="Home Movies"> | <img src="screenshots/home-anime.png" width="200" alt="Home Anime"> | <img src="screenshots/discover.png" width="200" alt="Discover"> | <img src="screenshots/ai-chat.png" width="200" alt="AI Chat"> |
 
@@ -123,7 +123,7 @@
 
 | Profile | Login | Trailer Playback | Anime Details |
 |:-------:|:-----:|:----------------:|:-------------:|
-| <img src="screenshots/profile.png" width="200" alt="Profile"> | <img src="screenshots/login.png" width="200" alt="Login"> | <img src="screenshots/trailer.png" width="200" alt="Trailer"> | <img src="screenshots/anime-detail.png" width="200" alt="Anime Detail"> |
+| <img src="screenshots/ai-chat.png" width="200" alt="AI Chat">| <img src="screenshots/login.png" width="200" alt="Login"> | <img src="screenshots/trailer.png" width="200" alt="Trailer"> | <img src="screenshots/anime-detail.png" width="200" alt="Anime Detail"> |
 
 </div>
 
