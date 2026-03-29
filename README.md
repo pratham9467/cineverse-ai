@@ -111,7 +111,7 @@
 
 | Home - Movies | Home - Anime | Discover | AI Recommendations |
 |:-------------:|:------------:|:--------:|:------------------:|
-| <img src="screenshots/home-movies.png" width="200" alt="Home Movies"> | <img src="screenshots/home-anime.png" width="200" alt="Home Anime"> | <img src="screenshots/discover.png" width="200" alt="Discover"> | <img src="screenshots/ai-chat.png" width="200" alt="AI Chat"> |
+| <img src="screenshots/home-movies.png" width="200" alt="Home Movies"> | <img src="screenshots/home-anime.png" width="200" alt="Home Anime"> | <img src="screenshots/discover.png" width="200" alt="Discover"> | <img src="screenshots\Ai.jpg" width="200" alt="AI Chat"> |
 
 ### 🎯 Features
 
@@ -123,7 +123,7 @@
 
 | Profile | Anime Screen | Login | Trailer |
 |:-------:|:------------:|:-----:|:-------:|
-| <img src="assets/images/Profile.jpg" width="200" alt="Profile"> | <img src="assets/images/animescreen.jpg" width="200" alt="Anime Screen"> | <img src="screenshots/login.png" width="200" alt="Login"> | <img src="screenshots/trailer.png" width="200" alt="Trailer"> |
+| <img src="assets/images/Profile.jpg" width="200" alt="Profile"> | <img src="assets/images/animescreen.jpg" width="200" alt="Anime Screen"> | <img src="screenshots\Login.jpg" width="200" alt="Login"> | <img src="screenshots\Trailer.jpg" width="200" alt="Trailer"> |
 
 </div>
 
