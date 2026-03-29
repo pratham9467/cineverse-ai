@@ -11,12 +11,21 @@ export interface User {
 
 export async function initAppwrite(): Promise<boolean> {
   try {
-    await account.get();
-    console.log('Appwrite connected successfully');
-    return true;
+    // Add timeout for the account.get() call
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error('Appwrite connection timeout')), 4000)
+    })
+
+    await Promise.race([
+      account.get(),
+      timeoutPromise
+    ])
+    
+    console.log('Appwrite connected successfully')
+    return true
   } catch (error) {
-    console.error('Appwrite connection failed:', error);
-    return false;
+    console.error('Appwrite connection failed:', error)
+    return false
   }
 }
 

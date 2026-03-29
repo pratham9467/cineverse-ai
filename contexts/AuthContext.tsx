@@ -41,27 +41,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isBackendAvailable, setIsBackendAvailable] = useState(true)
 
   useEffect(() => {
+    console.log('[Auth] Starting auth check...')
+    
     const checkSession = async () => {
       try {
-        // First check if Appwrite backend is available
-        const backendStatus = await initAppwrite()
+        // Add timeout for backend check (5 seconds)
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          setTimeout(() => reject(new Error('Backend check timeout')), 5000)
+        })
+
+        console.log('[Auth] Checking Appwrite backend...')
+        // Race between backend check and timeout
+        const backendStatus = await Promise.race([
+          initAppwrite(),
+          timeoutPromise
+        ]).catch(() => false) as boolean
+
         setIsBackendAvailable(backendStatus)
         
         if (!backendStatus) {
-          console.warn('⚠️ Appwrite backend is not available. App running in offline mode.')
-          console.warn('Please restore your Appwrite project at: https://cloud.appwrite.io/console')
+          console.warn('⚠️ Appwrite backend is not available or timed out. App running in offline mode.')
           setIsLoading(false)
           return
         }
 
+        console.log('[Auth] Backend available, getting user...')
         const appwriteUser = await getCurrentUser()
         if (appwriteUser) {
+          console.log('[Auth] User found:', appwriteUser.email)
           setUser(mapAppwriteUserToUser(appwriteUser))
+        } else {
+          console.log('[Auth] No user logged in')
         }
       } catch (error) {
-        console.error('Error checking auth session:', error)
+        console.error('[Auth] Error checking auth session:', error)
         setIsBackendAvailable(false)
       } finally {
+        console.log('[Auth] Auth check complete, setting isLoading=false')
         setIsLoading(false)
       }
     }

@@ -7,6 +7,7 @@ import { useFocusEffect, useRouter } from 'expo-router'
 import React, { useCallback, useEffect, useState } from 'react'
 import { ActivityIndicator, Image, ScrollView, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import { SvgXml } from 'react-native-svg'
+import { useThemeMode } from '@/contexts/ThemeModeContext'
 
 const placeholderImages = [
   require('@/assets/images/interstellar.png'),
@@ -30,6 +31,7 @@ const Watchlist = () => {
   const [loading, setLoading] = useState(true)
   const { user, isLoggedIn } = useAuth()
   const router = useRouter()
+  const { colors: themeColors } = useThemeMode()
 
   const loadWatchlist = useCallback(async () => {
     if (!isLoggedIn || !user?.$id) {
@@ -113,10 +115,10 @@ const Watchlist = () => {
         <View className="flex-row justify-between items-center mb-4">
           <Text className="text-secondary font-bold text-xl tracking-wide">My Watchlist</Text>
           <TouchableOpacity
-            className="w-9 h-9 items-center justify-center bg-cyan-500/10 rounded-full"
+            style={{ width: 36, height: 36, alignItems: 'center', justifyContent: 'center', backgroundColor: `${themeColors.primary}1A`, borderRadius: 18 }}
             onPress={() => router.push('/(tabs)/discover')}
           >
-            <SvgXml xml={searchIcon} width={18} height={18} />
+            <SvgXml xml={searchIcon} width={18} height={18} color={themeColors.primary} />
           </TouchableOpacity>
         </View>
 
@@ -126,17 +128,28 @@ const Watchlist = () => {
               <TouchableOpacity
                 key={tab.name}
                 onPress={() => setSelectedTab(tab.name)}
-                className={`px-4 py-2 rounded-lg flex-row items-center gap-2 ${selectedTab === tab.name ? 'bg-primary' : 'border border-primary'
-                  }`}
+                style={{
+                  paddingHorizontal: 16, paddingVertical: 8, borderRadius: 8,
+                  flexDirection: 'row', alignItems: 'center', gap: 8,
+                  backgroundColor: selectedTab === tab.name ? themeColors.primary : 'transparent',
+                  borderWidth: selectedTab === tab.name ? 0 : 1,
+                  borderColor: themeColors.primary,
+                }}
               >
-                <Text className={`font-semibold text-sm ${selectedTab === tab.name ? 'text-white' : 'text-text-secondary'
-                  }`}>
+                <Text style={{
+                  fontWeight: '600', fontSize: 14,
+                  color: selectedTab === tab.name ? '#ffffff' : '#94a3b8',
+                }}>
                   {tab.name}
                 </Text>
-                <View className={`px-1.5 py-0.5 rounded-md ${selectedTab === tab.name ? 'bg-white/20' : 'bg-cyan-500/20'
-                  }`}>
-                  <Text className={`text-micro font-semibold ${selectedTab === tab.name ? 'text-white' : 'text-primary'
-                    }`}>
+                <View style={{
+                  paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6,
+                  backgroundColor: selectedTab === tab.name ? 'rgba(255,255,255,0.2)' : `${themeColors.primary}33`,
+                }}>
+                  <Text style={{
+                    fontSize: 10, fontWeight: '600',
+                    color: selectedTab === tab.name ? '#ffffff' : themeColors.primary,
+                  }}>
                     {tab.count}
                   </Text>
                 </View>
@@ -148,26 +161,26 @@ const Watchlist = () => {
 
       {loading ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#2F9BBC" />
+          <ActivityIndicator size="large" color={themeColors.primary} />
         </View>
       ) : !isLoggedIn ? (
         <View className="flex-1 items-center justify-center px-6">
           <Text className="text-text-muted text-center mb-4">Please login to see your watchlist</Text>
           <TouchableOpacity
-            className="bg-primary px-6 py-3 rounded-lg"
+            style={{ backgroundColor: themeColors.primary, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 8 }}
             onPress={() => router.push('/authscreen/login' as any)}
           >
-            <Text className="text-secondary font-bold">Login</Text>
+            <Text className="text-white font-bold">Login</Text>
           </TouchableOpacity>
         </View>
       ) : filteredItems.length === 0 ? (
         <View className="flex-1 items-center justify-center px-6">
           <Text className="text-text-muted text-center mb-4">Your watchlist is empty</Text>
           <TouchableOpacity
-            className="bg-primary px-6 py-3 rounded-lg"
+            style={{ backgroundColor: themeColors.primary, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 8 }}
             onPress={() => router.push('/(tabs)/discover')}
           >
-            <Text className="text-secondary font-bold">Discover Movies</Text>
+            <Text className="text-white font-bold">Discover Movies</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -196,7 +209,7 @@ const Watchlist = () => {
                      />
                      <View className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80" />
                      <TouchableOpacity
-                       className="absolute top-1 right-1 w-8 h-8 items-center justify-center border border-primary bg-primary rounded-full"
+                       style={{ position: 'absolute', top: 4, right: 4, width: 32, height: 32, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: themeColors.primary, backgroundColor: themeColors.primary, borderRadius: 16 }}
                        onPress={() => handleRemove(item.$id)}
                      >
                        <SvgXml xml={bookmarkIcon} width={13} height={13} />

@@ -15,7 +15,8 @@ import Animated, {
   withSpring
 } from 'react-native-reanimated'
 import { SvgXml } from 'react-native-svg'
-import { homeIcon, searchIcon, watchlistIcon, profileIcon } from '@/lib/icons'
+import { homeIcon, searchIcon, watchlistIcon, profileIcon, socialIcon } from '@/lib/icons'
+import { useThemeMode } from '@/contexts/ThemeModeContext'
 import "../global.css"
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -24,6 +25,7 @@ const TAB_BAR_WIDTH = SCREEN_WIDTH * 0.92;
 const CustomTabBar = ({ state, descriptors, navigation }: any) => {
   const [tabWidth, setTabWidth] = useState(0);
   const translateX = useSharedValue(0);
+  const { colors } = useThemeMode();
 
   useEffect(() => {
     if (tabWidth > 0) {
@@ -53,7 +55,7 @@ const CustomTabBar = ({ state, descriptors, navigation }: any) => {
       <BlurView
         intensity={90}
         tint="dark"
-        className="rounded-full overflow-hidden border border-white/20"
+        className="rounded-full overflow-hidden border border-white/20 px-1"
         style={{
           width: TAB_BAR_WIDTH,
           height: 52,
@@ -61,18 +63,19 @@ const CustomTabBar = ({ state, descriptors, navigation }: any) => {
         }}
       >
         <View className="flex-row flex-1 items-center px-0.5" onLayout={onLayout}>
-          {/* Animated indicator — must use style for animated transforms + shadow */}
+          {/* Animated indicator — colors sync with movie/anime mode */}
           <Animated.View
             style={[
               {
                 position: 'absolute',
-                height: 50,
-                backgroundColor: 'rgba(46, 153, 189, 0.8)',
-                borderRadius: 50,
+                height: 40,
+                backgroundColor: colors.primaryBg,
+                borderRadius: 25,
+                padding: 4,
                 left: 0,
                 borderWidth: 1,
                 borderColor: 'rgba(255, 255, 255, 0.2)',
-                shadowColor: '#2E99BD',
+                shadowColor: colors.primaryShadow,
                 shadowOffset: { width: 0, height: 2 },
                 shadowOpacity: 0.3,
                 shadowRadius: 10,
@@ -102,6 +105,7 @@ const CustomTabBar = ({ state, descriptors, navigation }: any) => {
             switch (route.name) {
               case 'index': icon = homeIcon; label = 'Home'; break;
               case 'discover': icon = searchIcon; label = 'Search'; break;
+              case 'social': icon = socialIcon; label = 'Social'; break;
               case 'watchlist': icon = watchlistIcon; label = 'My List'; break;
               case 'profile': icon = profileIcon; label = 'Profile'; break;
               default: icon = homeIcon; label = '';
@@ -156,6 +160,7 @@ const _layout = () => {
     >
       <Tabs.Screen name="index" options={{ title: 'Home' }} />
       <Tabs.Screen name="discover" options={{ title: 'Search' }} />
+      <Tabs.Screen name="social" options={{ title: 'Social' }} />
       <Tabs.Screen name="watchlist" options={{ title: 'My List' }} />
       <Tabs.Screen name="profile" options={{ title: 'Profile' }} />
     </Tabs>

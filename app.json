@@ -4,7 +4,7 @@
     "slug": "cineverse-ai",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo.png",
+    "icon": "./assets/images/cineverse_logo.png",
     "scheme": "cineverse-ai",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -14,14 +14,14 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#000000",
-        "foregroundImage": "./assets/images/logo.png"
+        "foregroundImage": "./assets/images/cineverse_logo.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/logo.png",
+      "favicon": "./assets/images/cineverse_logo.png",
       "bundler": "metro"
     },
     "plugins": [
@@ -29,13 +29,13 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/logo.png",
+          "image": "./assets/images/cineverse_logo.png",
           "imageWidth": 250,
           "imageHeight": 250,
           "resizeMode": "cover",
           "backgroundColor": "#000000",
           "dark": {
-            "image": "./assets/images/logo.png",
+            "image": "./assets/images/cineverse_logo.png",
             "imageWidth": 250,
             "imageHeight": 250,
             "resizeMode": "cover",
@@ -49,7 +49,8 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "react-native-video"
     ],
     "experiments": {
       "typedRoutes": true,
