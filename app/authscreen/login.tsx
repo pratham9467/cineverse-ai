@@ -92,7 +92,7 @@ const LoginScreen = () => {
           <View className="w-20 h-20 items-center justify-center rounded-2xl border border-primary/30 bg-primary/10 shadow-[0_0_30px_rgba(140,37,244,0.2)] mb-6">
             <Image
               resizeMode="contain"
-              source={require("@/assets/images/logo.png")}
+              source={require("@/assets/images/cineverse_logo.png")}
               className="w-20 h-20"
             />
           </View>
