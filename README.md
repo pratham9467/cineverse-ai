@@ -127,8 +127,6 @@
 
 </div>
 
-> 📝 **Note:** Add your screenshots to the `screenshots/` directory with the filenames above to display them in the README.
-
 ---
 
 ## 🏗️ Architecture
