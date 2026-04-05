@@ -1,5 +1,5 @@
 import { formatRating, formatReleaseYear, Genre, getGenres, getImageUrl, getNowPlayingMovies, getPopularMovies, getTrendingMovies, Movie } from '@/lib/tmdb'
-import { Anime, formatAnimeRating, formatAnimeYear, getTopAnime, getSeasonalAnime } from '@/lib/jikan'
+import { Anime, formatAnimeRating, formatAnimeYear, getTopAnime, getSeasonalAnime, JikanRateLimitError } from '@/lib/jikan'
 import { getBestTrailer } from '@/lib/videos'
 import { playIcon, starIcon, aistarsSvgWhite } from '@/lib/icons'
 import BottomSheet from '@/lib/BottomSheet'
@@ -45,6 +45,7 @@ const Index = () => {
   // ── Shared state ─────────────────────────────────────────────────────────
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [animeRateLimited, setAnimeRateLimited] = useState(false)
   const [showTrendingSheet, setShowTrendingSheet] = useState(false)
   const [loadingMore, setLoadingMore] = useState(false)
   const [hasMorePages, setHasMorePages] = useState(true)
@@ -136,6 +137,7 @@ const Index = () => {
   // ── Anime data loading ───────────────────────────────────────────────────
   const loadAnimeData = async () => {
     setLoading(true)
+    setAnimeRateLimited(false)
     try {
       const [seasonal, top] = await Promise.all([
         getSeasonalAnime(1),
@@ -151,7 +153,14 @@ const Index = () => {
       animeLoadedRef.current = true
     } catch (err: any) {
       console.error('Error loading anime data:', err)
-      setError(err.message || 'Failed to load anime')
+      if (err instanceof JikanRateLimitError) {
+        // Auto-revert to movies and show a rate-limit notice
+        setAnimeRateLimited(true)
+        setMode('movies')
+        animeLoadedRef.current = false // allow re-load next time
+      } else {
+        setError(err.message || 'Failed to load anime')
+      }
     } finally {
       setLoading(false)
     }
@@ -234,14 +243,24 @@ const Index = () => {
   if (error) {
     return (
       <View className="flex-1 bg-background items-center justify-center px-6">
-        <Text className="text-red-400 text-center text-sm">{error}</Text>
-        <TouchableOpacity
-          style={{ backgroundColor: themeColors.primary }}
-          className="mt-4 px-4 py-2 rounded-lg"
-          onPress={mode === 'movies' ? loadMovieData : loadAnimeData}
-        >
-          <Text className="text-white font-bold">Retry</Text>
-        </TouchableOpacity>
+        <Text style={{ fontSize: 40, marginBottom: 12 }}>⚠️</Text>
+        <Text className="text-red-400 text-center text-sm mb-6">{error}</Text>
+        <View style={{ flexDirection: 'row', gap: 10 }}>
+          <TouchableOpacity
+            style={{ backgroundColor: themeColors.primary, paddingHorizontal: 20, paddingVertical: 10, borderRadius: 10 }}
+            onPress={mode === 'movies' ? loadMovieData : loadAnimeData}
+          >
+            <Text className="text-white font-bold">Retry</Text>
+          </TouchableOpacity>
+          {mode === 'anime' && (
+            <TouchableOpacity
+              style={{ backgroundColor: '#1e293b', borderWidth: 1, borderColor: '#334155', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 10 }}
+              onPress={() => { setError(null); setMode('movies') }}
+            >
+              <Text style={{ color: '#94a3b8', fontWeight: '700' }}>🎬 Switch to Movies</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     )
   }
@@ -266,6 +285,32 @@ const Index = () => {
 
   const renderHeader = () => (
     <View>
+      {/* Rate-limit banner — shown when Jikan auto-switched us back to Movies */}
+      {animeRateLimited && mode === 'movies' && (
+        <View style={{
+          marginHorizontal: 16, marginTop: 52, marginBottom: -32,
+          backgroundColor: '#1c1208', borderWidth: 1, borderColor: '#92400e',
+          borderRadius: 14, padding: 14, flexDirection: 'row', alignItems: 'center', gap: 10,
+        }}>
+          <Text style={{ fontSize: 20 }}>⚡</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={{ color: '#fbbf24', fontWeight: '700', fontSize: 13 }}>Anime Unavailable Right Now</Text>
+            <Text style={{ color: '#d97706', fontSize: 11, marginTop: 2 }}>
+              Jikan API rate limit hit. Switched to Movies. Try Anime again in a moment.
+            </Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => { setAnimeRateLimited(false); setMode('anime') }}
+            style={{ backgroundColor: '#92400e', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6 }}
+          >
+            <Text style={{ color: '#fbbf24', fontWeight: '700', fontSize: 11 }}>Retry</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setAnimeRateLimited(false)}>
+            <Text style={{ color: '#78350f', fontSize: 18, fontWeight: '700' }}>✕</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
       {/* Mode Toggle - Movies / Anime */}
       <View style={{ paddingHorizontal: 16, paddingTop: 52, paddingBottom: 12 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>

@@ -17,7 +17,9 @@
         "foregroundImage": "./assets/images/cineverse_logo.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [],
+      "package": "com.prathambindal.cineverseai"
     },
     "web": {
       "output": "static",

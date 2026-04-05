@@ -151,23 +151,47 @@ const fetchFromTMDB = async <T>(endpoint: string, params: Record<string, string>
   return response.json();
 };
 
-const fetchFromJikan = async <T>(endpoint: string): Promise<T> => {
+// Custom error class so callers can detect rate-limit failures specifically
+export class JikanRateLimitError extends Error {
+  isRateLimit = true;
+  constructor() {
+    super('Jikan API rate limit reached (429). Please wait a moment and try again.');
+    this.name = 'JikanRateLimitError';
+  }
+}
+
+const fetchFromJikan = async <T>(endpoint: string, retries = 3): Promise<T> => {
   const url = `${JIKAN_BASE_URL}${endpoint}`;
   console.log('Jikan Request:', endpoint);
-  
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-    },
-  });
-  
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Jikan API Error: ${response.status} - ${errorText}`);
+
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: { accept: 'application/json' },
+    });
+
+    if (response.status === 429) {
+      if (attempt < retries) {
+        // Exponential back-off: 1 s, 2 s, 4 s …
+        const delay = 1000 * Math.pow(2, attempt - 1);
+        console.warn(`Jikan 429 – retrying in ${delay}ms (attempt ${attempt}/${retries})`);
+        await new Promise(res => setTimeout(res, delay));
+        continue;
+      }
+      // All retries exhausted
+      throw new JikanRateLimitError();
+    }
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Jikan API Error: ${response.status} - ${errorText}`);
+    }
+
+    return response.json();
   }
-  
-  return response.json();
+
+  // Should never reach here
+  throw new JikanRateLimitError();
 };
 
 export interface AnimeGenre {

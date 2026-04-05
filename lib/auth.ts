@@ -20,10 +20,17 @@ export async function initAppwrite(): Promise<boolean> {
       account.get(),
       timeoutPromise
     ])
-    
-    console.log('Appwrite connected successfully')
+
+    console.log('Appwrite connected successfully (user session active)')
     return true
-  } catch (error) {
+  } catch (error: any) {
+    // A 401 means the backend IS reachable, just no active session — that's fine
+    const code = error?.code ?? error?.status ?? 0
+    if (code === 401 || error?.type === 'general_unauthorized_scope') {
+      console.log('Appwrite connected (no active session)')
+      return true
+    }
+    // Only real network errors / timeouts mean the backend is unavailable
     console.error('Appwrite connection failed:', error)
     return false
   }
