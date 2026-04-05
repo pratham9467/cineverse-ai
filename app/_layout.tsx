@@ -79,8 +79,7 @@ function AppContent() {
       <Stack.Screen name="authscreen/login" options={{ gestureEnabled: false }} />
       <Stack.Screen name="authscreen/signup" />
       <Stack.Screen name="auth/google/callback" options={{ gestureEnabled: false }} />
-      <Stack.Screen name="logo-demo" />
-      <Stack.Screen name="adobe-logo-showcase" />
+
     </Stack>
   );
 }
