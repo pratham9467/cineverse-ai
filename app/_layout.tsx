@@ -63,7 +63,6 @@ function AppContent() {
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: '#000000' },
-        navigationBarColor: '#000000',
         animation: 'fade',
         animationDuration: 200,
       }}
