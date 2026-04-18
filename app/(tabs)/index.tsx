@@ -134,6 +134,15 @@ const Index = () => {
 
 
 
+  const deduplicateAnime = (animeList: Anime[]): Anime[] => {
+    const seen = new Set()
+    return animeList.filter(anime => {
+      if (seen.has(anime.mal_id)) return false
+      seen.add(anime.mal_id)
+      return true
+    })
+  }
+
   // ── Anime data loading ───────────────────────────────────────────────────
   const loadAnimeData = async () => {
     setLoading(true)
@@ -144,10 +153,13 @@ const Index = () => {
         getTopAnime(1),
       ])
 
-      setTrendingAnime(seasonal.data.slice(0, 10))
-      setRecommendedAnime(top.data.slice(0, 6))
-      setAllAnime(top.data)
-      setHeroAnime(seasonal.data[0] || top.data[0] || null)
+      const uniqueSeasonal = deduplicateAnime(seasonal.data)
+      const uniqueTop = deduplicateAnime(top.data)
+
+      setTrendingAnime(uniqueSeasonal.slice(0, 10))
+      setRecommendedAnime(uniqueTop.slice(0, 6))
+      setAllAnime(uniqueTop)
+      setHeroAnime(uniqueSeasonal[0] || uniqueTop[0] || null)
       setAnimePage(1)
       setHasMorePages(true)
       animeLoadedRef.current = true
@@ -195,7 +207,7 @@ const Index = () => {
         } else {
           setAllAnime(prev => {
             const existingIds = new Set(prev.map(a => a.mal_id))
-            const newAnime = data.data.filter(a => !existingIds.has(a.mal_id))
+            const newAnime = deduplicateAnime(data.data).filter(a => !existingIds.has(a.mal_id))
             return [...prev, ...newAnime]
           })
           setAnimePage(nextPage)
